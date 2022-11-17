@@ -23,7 +23,6 @@ from .views import index
 urlpatterns = [
     path("",index,name="home"),
     path("admin/", admin.site.urls),
-    path("",include('api1.urls')),
     path("Uploader/",include('Uploader.urls')),
     path("",include('Reader.urls')),
     path(r'^$',TemplateView.as_view(template_name='templates/index.html'))
