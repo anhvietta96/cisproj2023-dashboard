@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Uploader/style.css' %}">
     <title>File Upload</title>
 </head>
 <body>
-{% load static %}
 
 {% block content %}
     <form method = 'post' enctype = "multipart/form-data">

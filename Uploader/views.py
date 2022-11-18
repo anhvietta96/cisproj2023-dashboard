@@ -8,5 +8,5 @@ def upload(request):
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
         uploaded_file_url = fs.url(filename)
-        return render(request, 'upload.html', {'uploaded_file_url': uploaded_file_url})
-    return render(request, 'upload.html')
+        return render(request, 'Uploader/upload.html', {'uploaded_file_url': uploaded_file_url})
+    return render(request, 'Uploader/upload.html')
