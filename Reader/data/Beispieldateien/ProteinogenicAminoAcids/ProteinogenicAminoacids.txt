@@ -1,0 +1,32 @@
+Positively Charged:
+Arginine: https://pubchem.ncbi.nlm.nih.gov/compound/6322
+Histidine: https://pubchem.ncbi.nlm.nih.gov/compound/6274
+Lysine: https://pubchem.ncbi.nlm.nih.gov/compound/5962
+
+Negatively Charged:
+Aspartic acid: https://pubchem.ncbi.nlm.nih.gov/compound/5960
+Glutamic acid: https://pubchem.ncbi.nlm.nih.gov/compound/33032
+
+Polar uncharged:
+Serine: https://pubchem.ncbi.nlm.nih.gov/compound/5951
+Threonine: https://pubchem.ncbi.nlm.nih.gov/compound/6288
+Asparagine: https://pubchem.ncbi.nlm.nih.gov/compound/6267
+Glutamine: https://pubchem.ncbi.nlm.nih.gov/compound/5961
+
+Special:
+Glycine: https://pubchem.ncbi.nlm.nih.gov/compound/750
+Proline: https://pubchem.ncbi.nlm.nih.gov/compound/145742
+Cysteine: https://pubchem.ncbi.nlm.nih.gov/compound/5862
+Selenocystine: https://pubchem.ncbi.nlm.nih.gov/compound/15104
+
+Hydrophobic:
+Alanine: https://pubchem.ncbi.nlm.nih.gov/compound/5950
+Valine: https://pubchem.ncbi.nlm.nih.gov/compound/6287
+Isoleucine: https://pubchem.ncbi.nlm.nih.gov/compound/6306
+Leucine: https://pubchem.ncbi.nlm.nih.gov/compound/6106
+Methionine: https://pubchem.ncbi.nlm.nih.gov/compound/6137
+
+Hydrophobic Aromatic:
+Phenylalanine: https://pubchem.ncbi.nlm.nih.gov/compound/6140
+Tyrosine: https://pubchem.ncbi.nlm.nih.gov/compound/6057
+Tryptophan: https://pubchem.ncbi.nlm.nih.gov/compound/6305
