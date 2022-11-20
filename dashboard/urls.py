@@ -23,6 +23,7 @@ from .views import index
 urlpatterns = [
       path("", index, name="home"),
       path("admin/", admin.site.urls),
-      path("Uploader/", include('Uploader.urls')),
+      path("upload/", include('Uploader.urls')),
+      # path("compounds/", include('compounds.urls')),
       path("", include('Reader.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    # 'compounds.apps.CompoundsConfig'
     'Uploader.apps.UploaderConfig',
     'Reader.apps.ReaderConfig',
     'django_extensions',
