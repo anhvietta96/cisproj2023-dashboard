@@ -93,9 +93,10 @@ class moleculeClass():
         :return: dictonary with all possible discriptors
         :rtype: Dictionary
         """
-        dict= self.mol.GetPropsAsDict()
-        self.dict
-        
+        # ToDO: Add support for multiple molecules
+        for mol in self.suppl:
+            return mol.GetPropsAsDict()
+
 
     #Lipinski Rule of 5
     """

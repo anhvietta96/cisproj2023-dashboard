@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>List of compunds</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'compounds/style.css' %}">
+    <title>List of compounds</title>
 </head>
 <body>
-
+    {% for mol_properties in mols_with_properties %}
+        <li>
+            <ul>
+            {% for elem in mol_properties %}
+                <li>{{elem}}</li>
+            {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
 </body>
 </html>
