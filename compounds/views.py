@@ -1,7 +1,9 @@
 from django.shortcuts import render
-import glob
-from moleculeClass import moleculeClass
+import os
+from glob import glob
 from pathlib import Path
+from compounds.moleculeClass import moleculeClass
+from dashboard.settings import MEDIA_ROOT
 
 
 def main_compound_view(request):
@@ -12,9 +14,9 @@ def main_compound_view(request):
                   'PUBCHEM_MOLECULAR_WEIGHT',
                   'PUBCHEM_MOLECULAR_FORMULA']
 
-    # ToDO: Use MEDIA_ROOT
-    mol_names = [Path(file).stem for file in glob.glob("media/*")]
     mol_properties = []
+    mol_names = [Path(file).stem for file in
+                 glob(os.path.join(MEDIA_ROOT, '*.sdf'))]
 
     for mol_name in mol_names:
         mol_instance = moleculeClass("media/", mol_name)
