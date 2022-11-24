@@ -15,7 +15,7 @@ class moleculeClass():
     def __init__(self, dir, name):
         self.dir = dir
         self.name = name
-        
+
     def buildLink(self):
         """
         This function builds the directory link to
@@ -26,7 +26,7 @@ class moleculeClass():
         """
         #assert self.dir and self.name is not none
         return self.dir+self.name+".sdf"
-        
+
     def loadMolecule(self):
         """
         Loads sdf-Files.
@@ -49,7 +49,7 @@ class moleculeClass():
             if mol is None: continue #test molecule before using it#
             list=mol.GetNumAtoms()
         return list
-        
+
     def drawMolecule2D(self):
         """
         Provides a picture of the actual supplier
@@ -85,17 +85,16 @@ class moleculeClass():
 
     #Ab hier beginnen die Eigenschaften#
 
- 
-    def getPropDict(self):
+
+    def getPropDictIterator(self):
         """
         Get a dictonary of atomar discriptors
         :param: mol: Molecul of interest
         :return: dictonary with all possible discriptors
         :rtype: Dictionary
         """
-        # ToDO: Add support for multiple molecules
         for mol in self.suppl:
-            return mol.GetPropsAsDict()
+            yield mol.GetPropsAsDict()
 
 
     #Lipinski Rule of 5
@@ -112,7 +111,7 @@ class moleculeClass():
     Descriptors.BalabanJ(mol) #Erlaubt detailreiche Unterscheidung ähnlicher Strukturen
     Descriptors.BertzCT(mol) #Komplexitaet vergleichen
     """
-        
+
         #Pandas
 """
 frame = PandasTools.LoadSDF('Arginine.sdf',smilesName='SMILES',molColName='Molecule',
