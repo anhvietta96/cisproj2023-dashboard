@@ -1,15 +1,30 @@
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, inchi
 from .models import Molecule
-
+"""
+In this file we iterate over a supplier and calculate all molecular properties of interest
+and saves them into a dictionary
+"""
 
 class MoleculeIteratorClass:
+    """
+    Class to iterate over a whole supplier with molecules
+    :param: filename: directory and filename of Molecule File, supplier: Supplier of Molecule File
+    :return: none
+    :rtype: none
+    """
     def __init__(self, filename: str, supplier=Chem.SDMolSupplier):
         self.filename = filename
         self.supplier = supplier
         self.mol_list = []
 
     def iterate_over_molecules(self):
+        """
+        This function iterates over all molecules of a supplier
+        :param: self
+        :return: none
+        :rtype: none
+        """
         with self.supplier(self.filename) as suppl:
             for mol in suppl:
                 if not mol:
@@ -20,11 +35,23 @@ class MoleculeIteratorClass:
                 self.mol_list.append(mol_props)
 
     def printall(self):
+        """
+        Dummy-Function to print out molecules
+        :param: self
+        :return: none
+        :rtype: none
+        """
         for mol in self.mol_list:
             print(mol)
 
 
 class MoleculeProperties:
+    """
+    Class to calculate molecule properties
+    :param: dir: mol: molecules of interest
+    :return: none
+    :rtype: none
+    """
     def __init__(self, mol):
         self.mol = mol
 
@@ -42,6 +69,12 @@ class MoleculeProperties:
         self.molecule_formula = rdMolDescriptors.CalcMolFormula(self.mol)
 
     def return_dict(self):
+        """
+        Returns a dictory of molecule properties
+        :param: none
+        :return: dictionary of molecular discriptors
+        :rtype: dict
+        """
         return {
             'inchi_key': self.inchi_key,
             'molecular_weight': self.molecular_weight,
@@ -53,6 +86,12 @@ class MoleculeProperties:
         }
 
     def save_molecule(self):
+        """
+        Saves molecular properties
+        :param: none
+        :return: none
+        :rtype: none
+        """
         m = Molecule(
             inchi_key=self.inchi_key,
             num_h_acceptors=self.num_h_acceptors,
