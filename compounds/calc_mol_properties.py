@@ -1,22 +1,38 @@
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, inchi
 from .models import Molecule
+
 """
-In this file we iterate over a supplier and calculate all molecular properties of interest
-and saves them into a dictionary
+In this file we iterate over a supplier and calculate all molecular properties 
+of interest and save them into a dictionary
 """
 
-class MoleculeIteratorClass:
+
+class MoleculeIterator:
     """
     Class to iterate over a whole supplier with molecules
-    :param: filename: directory and filename of Molecule File, supplier: Supplier of Molecule File
+    :param: filename: directory and filename of Molecule File
     :return: none
     :rtype: none
     """
-    def __init__(self, filename: str, supplier=Chem.SDMolSupplier):
+
+    def __init__(self, filename: str, save_to_list: bool = True,
+                 multithreaded: bool = False):
+
+        self.multithreaded = multithreaded
         self.filename = filename
-        self.supplier = supplier
+        self.supplier = None
+        self.save_mol_list = save_to_list
         self.mol_list = []
+
+        if filename.endswith('.sdf'):
+            self.supplier = Chem.SDMolSupplier if not multithreaded \
+                else Chem.MultithreadedSDMolSupplier
+        elif filename.endswith('.smi'):
+            self.supplier = Chem.SmilesMolSupplier if not multithreaded \
+                else Chem.MultithreadedSmilesMolSupplier
+        else:
+            raise ValueError
 
     def iterate_over_molecules(self):
         """
@@ -32,7 +48,9 @@ class MoleculeIteratorClass:
 
                 mol_props = MoleculeProperties(mol)
                 mol_props.save_molecule()
-                self.mol_list.append(mol_props)
+
+                if self.save_mol_list:
+                    self.mol_list.append(mol_props)
 
     def printall(self):
         """
@@ -52,6 +70,7 @@ class MoleculeProperties:
     :return: none
     :rtype: none
     """
+
     def __init__(self, mol):
         self.mol = mol
 
@@ -107,6 +126,6 @@ class MoleculeProperties:
 
 if __name__ == '__main__':
     filename = 'Beispieldateien/Drugs/Drugs.sdf'
-    x = MoleculeIteratorClass(filename)
+    x = MoleculeIterator(filename)
     x.iterate_over_molecules()
     x.printall()

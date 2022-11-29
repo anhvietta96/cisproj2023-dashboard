@@ -15,3 +15,15 @@ class Molecule(models.Model):
 
     def __str__(self):
         return f"inchi_key={self.inchi_key}"
+
+
+class MoleculeSet(models.Model):
+    set_id = models.AutoField(primary_key=True)
+    set_name = models.CharField(max_length=120)
+    molecules = models.ManyToManyField(Molecule)
+
+    class Meta:
+        ordering = ['set_name']
+
+    def __str__(self):
+        return self.set_name
