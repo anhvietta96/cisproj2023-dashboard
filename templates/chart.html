@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+    {% block main %}
+        <div class="chart">
+            <div class="charts-card">
+                <p class="chart-title">{{title}}</p>
+                <div id="dynamic-chart"></div>
+                <script id="chart-data" type="application/json">
+                    {{options}}
+                </script>
+                <script type="text/javascript">
+                    console.log("Here");
+                    const Options = JSON.parse(document.getElementById('chart-data').textContent)
+                    /*var ChartOptions = JSON.parse({{options}});*/
+                    console.log(Options);
+                    var chart = new ApexChart('#dynamic-chart',{{options}});
+                    chart.render();
+                </script>
+            </div>
+        </div>
+    {% endblock %}

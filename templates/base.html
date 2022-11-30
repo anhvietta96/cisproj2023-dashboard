@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        table, th, td{
+            border: 1px solid;
+        }
+    </style>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>Dashboard</title>
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+        {% load static %}
+        <link rel="stylesheet" href="{% static '/css/styles.css' %}">
+    </head>
+
+    <body>
+        <div class="grid-container">
+            <header class="header">
+                <div class="menu-icon" onclick="openSidebar()">
+                    <span class="material-icons-outlined">menu</span>
+                </div>
+                <div class="header-left">
+                    <form action="{% url 'search_url' %}" id="searchQueryForm" method='GET'>
+                        <input name="search_query" type="search_query" placeholder="Search...">
+                        <button class="material-icons-outlined" type='submit_search' name="searchQuery">search</button>
+                    </form>
+                </div>
+                <div class="header-right">
+                    <span class="material-icons-outlined">account_circle</span>
+                </div>
+            </header>
+
+            <aside id="sidebar">
+                <div class="sidebar-title">
+                    <div class="sidebar-brand">
+                        <span class="material-icons-outlined">inventory</span> CiS-Dashboard
+                    </div>
+                    <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+                </div>
+
+                <ul class="sidebar-list">
+                    <li class="sidebar-list-item">
+                        <span class="material-icons-outlined">dashboard</span> 
+                        <a class="btn btn-primary" href="/">Home</a>
+                    </li>
+                    <li class="sidebar-list-item">
+                        <span class="material-icons-outlined">shopping_cart</span>
+                          <a class="btn btn-primary" style="text-decoration:none; color:inherit;"
+                               href="/compounds">Compounds</a>
+                    </li>
+                    <li class="sidebar-list-item">
+                        <span class="material-icons-outlined">settings</span>
+                            <a class="btn btn-primary" style="text-decoration:none; color:inherit;"
+                               href="/upload">Upload</a>
+                    </li>
+                    <li class="sidebar-list-item">
+                        <span class="material-icons-outlined">inventory_2</span> Chart
+                    </li>
+                </ul>
+            </aside>
+
+            <main class="main-container">
+                {% block main %}
+
+                {% endblock %}
+            </main>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js"></script>
+        {% load static %}
+        <script src="{% static '/js/scripts2.js' %}"></script>
+    </body>

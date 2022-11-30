@@ -1,0 +1,23 @@
+{% extends 'base.html'%}
+    {% block main %}
+        <table style="width:100%">
+            <tr>
+                <th>inchi_key</th>
+                <th>log_p</th>
+                <th>n_h_a</th>
+                <th>n_h_b</th>
+                <th>mass</th>
+            </tr>
+            {% for row in table %}
+            <tr>
+                {% for entry in row %}
+                    {% if forloop.counter < 2 %}
+                    <th><a href="/compounds/data/compounds/{{entry}}">{{entry}}</a></th>
+                    {% else %}
+                    <th><a>{{entry}}</a></th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    {% endblock %}
