@@ -1,6 +1,8 @@
 
 var dynamicchart_bool = document.getElementById("dynamic-chart");
 if(dynamicchart_bool){
-  const data = JSON.parse(document.currentScript.nextElementSibling.textContent);
-  console.log(data);
+  const options = JSON.parse(document.currentScript.nextElementSibling.textContent);
+  console.log(options);
+  var chart = new ApexCharts(document.querySelector('#dynamic-chart'),options);
+  chart.render();
 }

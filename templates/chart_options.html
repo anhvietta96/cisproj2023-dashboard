@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+    {% block main %}
+        <div class='main-header'>
+            Select Properties
+        </div>
+        <form method="post" action="{% url 'chart_result' %}">
+            {% csrf_token %}
+            <div class="property-selector">X-axis</div>
+            <select name="x-axis" id="x-axis">
+                {% for property in property_list %}
+                    <option value="{{forloop.counter}}">{{property}}</option>
+                {% endfor %}
+            </select>
+            <div class="property-selector">Y-axis</div>
+            <select name="y-axis" id="y-axis">
+                {% for property in property_list %}
+                    <option value="{{forloop.counter}}">{{property}}</option>
+                {% endfor %}
+            </select>
+            <button class="material-icons-outlined" type='submit'>search</button>
+        </form>
+        <a href="/chart/result" class="chart-button">Create Chart</a>
+    {% endblock %}

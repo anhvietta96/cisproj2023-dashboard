@@ -185,7 +185,14 @@ body {
 /*  font-weight: 600; */
 }
   
-  
+a.chart-button {
+  appearance: button;
+  text-decoration: none;
+
+}
+
+
+
 /* ---------- SCROLLBARS ---------- */
   
 ::-webkit-scrollbar {

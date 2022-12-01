@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+    {% block main %}
+        <div class="chart">
+            <div class="charts-card">
+                <p class="chart-title">{{title}}</p>
+                <div id="dynamic-chart" "></div>
+                {% load static %}
+                <script src="{% static 'js/chart.js'%}" defer></script>
+                {{options|json_script}}
+            </div>
+        </div>
+    {% endblock %}
