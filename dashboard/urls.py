@@ -17,12 +17,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import index
+from .views import index,searchQuery
+from compounds.views import SearchResultsView,search_results
 
 urlpatterns = [
       path("", index, name="home"),
       path("admin/", admin.site.urls),
       path("upload/", include('Uploader.urls')),
       path("compounds/", include('compounds.urls')),
+      path("chart/",include('chart.urls')),
+      path("search/",search_results,name='search_url'),
       path("", include('Reader.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

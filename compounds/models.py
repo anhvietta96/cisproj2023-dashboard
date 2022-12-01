@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Molecule(models.Model):
     inchi_key = models.CharField(primary_key=True, max_length=27)
 

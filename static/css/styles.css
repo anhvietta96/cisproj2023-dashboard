@@ -10,11 +10,11 @@ body {
     vertical-align: middle;
     line-height: 1px;
 }
-
+/*
 .font-weight-bold {
     font-weight: 600;
 }
-
+*/
 .grid-container {
     display: grid;
     grid-template-columns: 260px 1fr 1fr 1fr;
@@ -34,6 +34,15 @@ body {
     justify-content: space-between;
     padding: 0 30px 0 30px;
     box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2);
+}
+
+.header-left input[type=search_query] {
+    float: center;
+    padding: 5px;
+    border: none;
+    margin-top: 5px;
+    margin-left: 5px;
+    font-size: 17px;
 }
 
 #sidebar {
@@ -57,7 +66,7 @@ body {
 .sidebar-brand {
     margin-top: 15px;
     font-size: 20px;
-    font-weight: 700;
+/*    font-weight: 700;*/
 }
 
 .sidebar-list {
@@ -71,7 +80,7 @@ body {
 }
 
 .sidebar-list-item:hover {
-    background-color: rbga(255,255,255,0.2);
+    background-color: #367952;
     cursor: pointer;
 }
 
@@ -134,7 +143,7 @@ body {
   
 .card > span {
   font-size: 20px;
-  font-weight: 600;
+/*  font-weight: 600; */
 }
   
 .card-inner {
@@ -173,7 +182,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  font-weight: 600;
+/*  font-weight: 600; */
 }
   
   

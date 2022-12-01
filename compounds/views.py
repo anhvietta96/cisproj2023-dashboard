@@ -4,7 +4,10 @@ from glob import glob
 from pathlib import Path
 from .moleculeClass import moleculeClass
 from dashboard.settings import MEDIA_ROOT
-
+from django.views.generic import ListView
+from .serializers import MoleculeSerializer
+from .models import Molecule
+from rest_framework import viewsets
 
 def main_compound_view(request):
     properties = ['PUBCHEM_COMPOUND_CID',
@@ -30,3 +33,26 @@ def main_compound_view(request):
 
     return render(request, 'compounds/compounds.html',
                   {'mols_with_properties': mol_properties})
+
+class CompoundViewSet(viewsets.ModelViewSet):
+    queryset = Molecule.objects.all().order_by('inchi_key')
+    serializer_class = MoleculeSerializer
+    http_method_names = ['get','head']
+
+class SearchResultsView(ListView):
+    model = Molecule
+    template_name = 'search.html'
+
+    def get_queryset(self):
+        query=self.request.GET.get("search_query")
+        search_result = Molecule.objects.filter(inchi_key__icontains=query)
+        return search_result
+
+def search_results(request):
+    query=request.GET.get("search_query")
+    q = Molecule.objects.filter(inchi_key__icontains=query)
+    search_results = []
+    for mol in q:
+        search_results.append([mol.inchi_key,mol.log_p,mol.num_h_acceptors,mol.num_h_donors,mol.molecular_mass])
+    data = {'table':search_results}
+    return render(request,'search.html',data)

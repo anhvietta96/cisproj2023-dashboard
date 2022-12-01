@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'compounds.apps.CompoundsConfig',
     'Uploader.apps.UploaderConfig',
+    'chart.apps.ChartConfig',
     'Reader.apps.ReaderConfig',
     'django_extensions',
 ]

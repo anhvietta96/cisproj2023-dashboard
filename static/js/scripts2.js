@@ -1,6 +1,7 @@
+
+
 var sidebarOpen = false
 var sidebar = document.getElementById("sidebar")
-console.log("This is a test")
 function openSidebar() {
     if(!sidebarOpen)
         sidebar.classList.add("sidebar-responsive");
@@ -89,3 +90,27 @@ var ScatterOptions = {
 
 var chart = new ApexCharts(document.querySelector("#scatter-chart"), ScatterOptions);
 chart.render();
+/*
+var ChartOptions = JSON.parse(document.getElementById('chart-options').textContent);
+var chart = new ApexCharts(document.querySelector("#dynamic-chart"),ChartOptions);
+chart.render()
+
+
+$(document).ready(function(){
+  $('#searchQueryForm').submit(function(evt){
+    evt.preventDefault();
+    data = {'search_str':$(this).find('input').val()};
+    console.log($('#searchQueryForm').serialize());
+    url = "{% url 'Search_Result' %}"
+    $.ajax({
+      method:'GET',
+      url: 'search/',
+      data: data,
+      success: function(response){
+        render(response);
+      }
+    });
+
+  });
+
+});*/
