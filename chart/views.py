@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from compounds.models import Molecule
-from .models import PropertyChoice
-from .forms import PropertyForm
+'''from .models import PropertyChoice
+from .forms import PropertyForm'''
 import json
 
 class Chart:
