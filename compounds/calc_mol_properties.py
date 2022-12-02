@@ -1,5 +1,7 @@
+import os.path
+import sys
 from rdkit import Chem
-from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, inchi
+from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, inchi, Crippen
 from .models import Molecule
 
 """
@@ -10,7 +12,7 @@ of interest and save them into a dictionary
 
 class MoleculeIterator:
     """
-    Class to iterate over a whole supplier with molecules
+    Class to iterate over all molecules in an .sdf or .smi file
     :param: filename: directory and filename of Molecule File
     :return: none
     :rtype: none
@@ -19,11 +21,14 @@ class MoleculeIterator:
     def __init__(self, filename: str, save_to_list: bool = True,
                  multithreaded: bool = False):
 
-        self.multithreaded = multithreaded
         self.filename = filename
-        self.supplier = None
         self.save_mol_list = save_to_list
+        self.multithreaded = multithreaded
+        self.supplier = None
         self.mol_list = []
+
+        if not os.path.isfile(filename):
+            raise ValueError
 
         if filename.endswith('.sdf'):
             self.supplier = Chem.SDMolSupplier if not multithreaded \
@@ -44,6 +49,7 @@ class MoleculeIterator:
         with self.supplier(self.filename) as suppl:
             for mol in suppl:
                 if not mol:
+                    print("Cannot parse molecule", file=sys.stderr)
                     continue
 
                 mol_props = MoleculeProperties(mol)
@@ -59,6 +65,9 @@ class MoleculeIterator:
         :return: none
         :rtype: none
         """
+        if not self.save_mol_list:
+            print("Saving molecules is disabled", file=sys.stderr)
+
         for mol in self.mol_list:
             print(mol)
 
@@ -66,7 +75,7 @@ class MoleculeIterator:
 class MoleculeProperties:
     """
     Class to calculate molecule properties
-    :param: dir: mol: molecules of interest
+    :param: mol: molecule of interest
     :return: none
     :rtype: none
     """
@@ -78,30 +87,32 @@ class MoleculeProperties:
         self.inchi_key = inchi.MolToInchiKey(self.mol)
 
         # properties for Lipinksi's rule of five
+        self.log_p = round(Crippen.MolLogP(self.mol), 6)
         self.molecular_weight = round(Descriptors.MolWt(self.mol), 4)
-        self.log_p = round(Descriptors.MolLogP(self.mol), 6)
         self.num_h_acceptors = Lipinski.NumHAcceptors(self.mol)
         self.num_h_donors = Lipinski.NumHDonors(self.mol)
 
         # additional properties
+        self.molecular_formula = rdMolDescriptors.CalcMolFormula(self.mol)
+        self.num_rings = rdMolDescriptors.CalcNumRings(self.mol)
         self.rotatable_bonds = Lipinski.NumRotatableBonds(self.mol)
-        self.molecule_formula = rdMolDescriptors.CalcMolFormula(self.mol)
 
     def return_dict(self):
         """
-        Returns a dictory of molecule properties
+        Returns a dictionary of molecule properties
         :param: none
-        :return: dictionary of molecular discriptors
+        :return: dictionary of molecular descriptors
         :rtype: dict
         """
         return {
             'inchi_key': self.inchi_key,
-            'molecular_weight': self.molecular_weight,
             'log_p': self.log_p,
-            'rotatable_bonds': self.rotatable_bonds,
+            'molecular_formula': self.molecular_formula,
+            'molecular_weight': self.molecular_weight,
             'num_h_acceptors': self.num_h_acceptors,
             'num_h_donors': self.num_h_donors,
-            'molecule_formula': self.molecule_formula,
+            'num_rings': self.num_rings,
+            'num_rotatable_bonds': self.rotatable_bonds
         }
 
     def save_molecule(self):
@@ -113,10 +124,13 @@ class MoleculeProperties:
         """
         m = Molecule(
             inchi_key=self.inchi_key,
+            log_p=self.log_p,
+            molecular_formula=self.molecular_formula,
+            molecular_weight=self.molecular_weight,
             num_h_acceptors=self.num_h_acceptors,
             num_h_donors=self.num_h_donors,
-            log_p=self.log_p,
-            molecular_mass=self.molecular_weight
+            num_rings=self.num_rings,
+            num_rotatable_bonds=self.rotatable_bonds
         )
         m.save()
 
