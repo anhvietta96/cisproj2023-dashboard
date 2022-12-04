@@ -52,7 +52,12 @@ def search_results(request):
     query=request.GET.get("search_query")
     q = Molecule.objects.filter(inchi_key__icontains=query)
     search_results = []
+    properties = Molecule.__dict__["__doc__"]
+    property_list = properties[9:].replace(',','').replace(')','').split()
     for mol in q:
-        search_results.append([mol.inchi_key,mol.log_p,mol.num_h_acceptors,mol.num_h_donors,mol.molecular_mass])
+        value_list = []
+        for property in property_list:
+            value_list.append(getattr(mol,property))
+        search_results.append(value_list)
     data = {'table':search_results}
     return render(request,'search.html',data)
