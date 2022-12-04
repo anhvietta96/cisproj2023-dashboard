@@ -10,9 +10,9 @@ of interest
 """
 
 
-def insert_into_new_set(dirname, set_name='') -> None:
+def insert_into_new_set(dirname, set_name='', set_id=None) -> None:
     """
-    Adds the compounds from MEDIA_ROOT into the DB and links them to a new
+    Adds the compounds from dirname into the DB and links them to a new
     MoleculeSet with name set_name
     :param dirname: name of the directory which includes SDF or SMI files
     :param set_name: name of the new MoleculeSet
@@ -23,6 +23,28 @@ def insert_into_new_set(dirname, set_name='') -> None:
 
     mol_set = MoleculeSet(set_name=set_name)
     mol_set.save()
+
+    mol_set.molecules.add(*file_iterator.get_mol_list())
+    mol_set.save()
+
+
+def insert_into_existing_set(dirname, set_id=None) -> None:
+    """
+    Adds the compounds from dirname into the DB and links them to a new
+    MoleculeSet with name set_name
+    :param dirname: name of the directory which includes SDF or SMI files
+    :param set_id: set_id of a specific Molecule
+    :return:
+    """
+    file_iterator = FileIterator(dirname)
+    file_iterator.iterate_over_files()
+
+    mol_set_query = MoleculeSet.objects.filter(set_id=set_id)
+    if mol_set_query:
+        mol_set = mol_set_query[0]
+    else:
+        print("No such MoleculeSet!", file=sys.stderr)
+        raise ValueError
 
     mol_set.molecules.add(*file_iterator.get_mol_list())
     mol_set.save()

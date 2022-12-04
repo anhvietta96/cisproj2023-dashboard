@@ -2,7 +2,7 @@ from compounds.calc_mol_properties import FileIterator
 from dashboard.settings import MEDIA_ROOT
 
 
-def run(*args):
+def run(*args) -> None:
     """
     Adds the compounds from the directories in args into the DB
     Default directory is MEDIA_ROOT
