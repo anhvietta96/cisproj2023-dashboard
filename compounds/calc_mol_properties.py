@@ -10,6 +10,32 @@ of interest and save them into a dictionary
 """
 
 
+class FileIterator:
+    """
+    Class for the iteration over all files in a directory,
+    adding the molecules into the DB.
+    """
+
+    def __init__(self, dirname):
+        self.dirname = dirname
+
+        if not os.path.isdir(dirname):
+            print(f"{dirname} is not a valid directory", file=sys.stderr)
+            raise ValueError
+
+    def iterate_over_files(self):
+        for root, dirs, files in os.walk(self.dirname):
+            for filename in files:
+                path_to_file = os.path.join(root, filename)
+                try:
+                    mol_iterator = MoleculeIterator(
+                        path_to_file, save_to_list=False)
+                    mol_iterator.iterate_over_molecules()
+                except ValueError:
+                    print(f"{path_to_file} is not a valid file!",
+                          file=sys.stderr)
+
+
 class MoleculeIterator:
     """
     Class to iterate over all molecules in an .sdf or .smi file
@@ -28,6 +54,7 @@ class MoleculeIterator:
         self.mol_list = []
 
         if not os.path.isfile(filename):
+            print(f"{filename} is not a valid file", file=sys.stderr)
             raise ValueError
 
         if filename.endswith('.sdf'):
@@ -37,6 +64,7 @@ class MoleculeIterator:
             self.supplier = Chem.SmilesMolSupplier if not multithreaded \
                 else Chem.MultithreadedSmilesMolSupplier
         else:
+            print(f"{filename} is not an SDF or SMI file! ", file=sys.stderr)
             raise ValueError
 
     def iterate_over_molecules(self):
@@ -139,7 +167,7 @@ class MoleculeProperties:
 
 
 if __name__ == '__main__':
-    filename = 'Beispieldateien/Drugs/Drugs.sdf'
-    x = MoleculeIterator(filename)
+    drugs_filepath = 'Beispieldateien/Drugs/Drugs.sdf'
+    x = MoleculeIterator(drugs_filepath)
     x.iterate_over_molecules()
     x.printall()
