@@ -2,12 +2,30 @@ import os.path
 import sys
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, inchi, Crippen
-from .models import Molecule
+from .models import Molecule, MoleculeSet
 
 """
 In this file we iterate over a supplier and calculate all molecular properties 
-of interest and save them into a dictionary
+of interest
 """
+
+
+def insert_into_new_set(dirname, set_name='') -> None:
+    """
+    Adds the compounds from MEDIA_ROOT into the DB and links them to a new
+    MoleculeSet with name set_name
+    :param dirname: name of the directory which includes SDF or SMI files
+    :param set_name: name of the new MoleculeSet
+    :return:
+    """
+    file_iterator = FileIterator(dirname)
+    file_iterator.iterate_over_files()
+
+    mol_set = MoleculeSet(set_name=set_name)
+    mol_set.save()
+
+    mol_set.molecules.add(*file_iterator.get_mol_list())
+    mol_set.save()
 
 
 class FileIterator:
@@ -16,8 +34,9 @@ class FileIterator:
     adding the molecules into the DB.
     """
 
-    def __init__(self, dirname):
+    def __init__(self, dirname: str):
         self.dirname = dirname
+        self.mol_list = []
 
         if not os.path.isdir(dirname):
             print(f"{dirname} is not a valid directory", file=sys.stderr)
@@ -27,30 +46,50 @@ class FileIterator:
         for root, dirs, files in os.walk(self.dirname):
             for filename in files:
                 path_to_file = os.path.join(root, filename)
+
                 try:
-                    mol_iterator = MoleculeIterator(
-                        path_to_file, save_to_list=False)
-                    mol_iterator.iterate_over_molecules()
+                    mol_iterator = MoleculeIterator(path_to_file)
                 except ValueError:
-                    print(f"{path_to_file} is not a valid file!",
-                          file=sys.stderr)
+                    print(f"Skipped {path_to_file}", file=sys.stderr)
+                    continue
+
+                mol_iterator.iterate_over_molecules()
+                self.mol_list.extend(mol_iterator.get_mol_list())
+
+    def get_mol_list(self) -> list[Molecule]:
+        """
+        Returns a list of all Molecule instances from self.dirname
+        :return: list
+        """
+        return self.mol_list
+
+    def add_mol_list_to_set(self, molecule_set: MoleculeSet) -> None:
+        """
+        Insert all molecules into the given MoleculeSet
+        :return: None
+        """
+        molecule_set.molecules.add(*self.mol_list)
+        molecule_set.save()
 
 
 class MoleculeIterator:
     """
     Class to iterate over all molecules in an .sdf or .smi file
-    :param: filename: directory and filename of Molecule File
+    :param: filename: path to file (incl. filename) of Molecule File
     :return: none
     :rtype: none
     """
 
-    def __init__(self, filename: str, save_to_list: bool = True,
+    def __init__(self, filename: str,
+                 save_model_instances: bool = True,
+                 print_mol_dicts: bool = False,
                  multithreaded: bool = False):
 
         self.filename = filename
-        self.save_mol_list = save_to_list
-        self.multithreaded = multithreaded
         self.supplier = None
+        self.multithreaded = multithreaded
+        self.print_mol_dicts = print_mol_dicts
+        self.save_model_list = save_model_instances
         self.mol_list = []
 
         if not os.path.isfile(filename):
@@ -67,9 +106,10 @@ class MoleculeIterator:
             print(f"{filename} is not an SDF or SMI file! ", file=sys.stderr)
             raise ValueError
 
-    def iterate_over_molecules(self):
+    def iterate_over_molecules(self) -> None:
         """
-        This function iterates over all molecules of a supplier
+        This function iterates over all molecules in the provided filename
+        and saves the molecules into the DB
         :param: self
         :return: none
         :rtype: none
@@ -80,24 +120,20 @@ class MoleculeIterator:
                     print("Cannot parse molecule", file=sys.stderr)
                     continue
 
-                mol_props = MoleculeProperties(mol)
-                mol_props.save_molecule()
+                mol_props_instance = MoleculeProperties(mol)
+                mol_instance = mol_props_instance.save_molecule()
 
-                if self.save_mol_list:
-                    self.mol_list.append(mol_props)
+                if self.save_model_list:
+                    self.mol_list.append(mol_instance)
+                if self.print_mol_dicts:
+                    print(mol_instance)
 
-    def printall(self):
+    def get_mol_list(self) -> list[Molecule]:
         """
-        Dummy-Function to print out molecules
-        :param: self
-        :return: none
-        :rtype: none
+        Returns a list of all Molecule instances from self.filename
+        :return: list
         """
-        if not self.save_mol_list:
-            print("Saving molecules is disabled", file=sys.stderr)
-
-        for mol in self.mol_list:
-            print(mol)
+        return self.mol_list
 
 
 class MoleculeProperties:
@@ -143,7 +179,7 @@ class MoleculeProperties:
             'num_rotatable_bonds': self.rotatable_bonds
         }
 
-    def save_molecule(self):
+    def save_molecule(self) -> Molecule:
         """
         Saves molecular properties
         :param: none
@@ -161,6 +197,7 @@ class MoleculeProperties:
             num_rotatable_bonds=self.rotatable_bonds
         )
         m.save()
+        return m
 
     def __str__(self):
         return str(self.return_dict())
@@ -170,4 +207,3 @@ if __name__ == '__main__':
     drugs_filepath = 'Beispieldateien/Drugs/Drugs.sdf'
     x = MoleculeIterator(drugs_filepath)
     x.iterate_over_molecules()
-    x.printall()
