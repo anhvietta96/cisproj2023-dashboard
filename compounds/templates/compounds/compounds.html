@@ -1,20 +1,272 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'compounds/style.css' %}">
-    <title>List of compounds</title>
-</head>
-<body>
-    {% for mol_properties in mols_with_properties %}
-        <li>
-            <ul>
-            {% for elem in mol_properties %}
-                <li>{{elem}}</li>
-            {% endfor %}
-            </ul>
-        </li>
-    {% endfor %}
-</body>
-</html>
+{% extends 'base.html' %}
+
+    {% block main %}
+
+    <style>
+        table, th, td {
+            border: 1px solid;
+        }
+
+        .btn-group button {
+          display: inline-block;
+          border-radius: 4px;
+          background-color: #21232d;
+          border: none;
+          color: #FFFFFF;
+          text-align: center;
+          font-size: 20px;
+          padding: 10px;
+          width: 200px;
+          transition: all 0.5s;
+          cursor: pointer;
+          margin: 5px;
+          float: right;
+
+
+        }
+
+        .btn-group button span {
+          cursor: pointer;
+          display: inline-block;
+          position: relative;
+          transition: 0.5s;
+        }
+
+        .btn-group button span:after {
+          content: '\00bb';
+          position: absolute;
+          opacity: 0;
+          top: 0;
+          right: -20px;
+          transition: 0.5s;
+        }
+
+        .btn-group button:hover span {
+          padding-right: 25px;
+        }
+
+        .btn-group button:hover span:after {
+          opacity: 1;
+          right: 0;
+        }
+
+        .container {
+          margin: auto;
+          max-width: 1200px;
+          min-height: 50vh;
+          overflow: scroll;
+          width: 100%;
+        }
+
+
+
+        table {
+        border-collapse: collapse;
+        border-radius: 1em;
+        overflow: hidden;
+        width: 100%;
+
+        }
+
+        thead tr {
+          border-bottom: 4px solid white;
+          border-top: 4px solid white;
+          height: 1px;
+
+        }
+
+        th {
+        background-color: #95A5A6;
+        font-size: 14px;
+        text-transform: uppercase;
+        border-bottom: 4px solid white;
+        border-left: 4px solid white;
+        border-right: 4px solid white;
+        font-color: black;
+
+          font-weight: bold;
+          height: inherit;
+          padding: 20px;
+          white-space: nowrap;
+
+        }
+
+        th:not(:first-of-type) {
+          border-left: 4px solid white;
+        }
+
+        th button {
+          background-color: #eee;
+          border: none;
+          cursor: pointer;
+          display: block;
+          font: inherit;
+          height: 100%;
+          margin: 0;
+          min-width: max-content;
+          padding: 0.5rem 1rem;
+          position: relative;
+          text-align: left;
+          width: 100%;
+
+        }
+
+        tbody tr {
+          border-bottom: 4px solid white;
+
+
+        }
+
+        td {
+          padding: 0.5rem 1rem;
+          text-align: left;
+          background-color: #eff5f5;
+          border-bottom: 4px solid white;
+          border-left: 4px solid white;
+          border-right: 4px solid white;
+
+        }
+
+         .container tr:hover {
+            background-color: white;
+            -webkit-box-shadow: 0 6px 6px -6px #0E1119;
+            -moz-box-shadow: 0 6px 6px -6px #0E1119;
+            box-shadow: 0 6px 6px -6px #0E1119;
+            }
+
+        .container td:hover {
+          background-color: #e0ebeb;
+          color: #403E10;
+          font-weight: bold;
+
+          /*box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;*/
+          transform: translate3d(6px, -6px, 0);
+
+
+          transition-delay: 0s;
+              transition-duration: 0.4s;
+              transition-property: all;
+          transition-timing-function: line;
+        }
+        .container tr:nth-child(even) {background-color: #f2f2f2;}
+         /* The Modal (background) */
+            .modal {
+              display: none; /* Hidden by default */
+              position: fixed; /* Stay in place */
+              z-index: 1; /* Sit on top */
+              left: 0;
+              top: 0;
+              width: 100%; /* Full width */
+              height: 100%; /* Full height */
+              overflow: auto; /* Enable scroll if needed */
+              background-color: rgb(0,0,0); /* Fallback color */
+              background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            }
+
+            /* Modal Content/Box */
+            .modal-content {
+            background-color: #fefefe;
+              margin: 20% auto; /* 20% from the top and centered */
+              padding: 20px;
+              border: 1px solid #888;
+              width: 60%; /* Could be more or less, depending on screen size */
+              font-size: 30px;
+            }
+
+            /* The Close Button */
+            .close {
+              color: #aaa;
+              float: right;
+              font-size: 28px;
+              font-weight: bold;
+            }
+
+            .close:hover,
+            .close:focus {
+              color: black;
+            text-decoration: none;
+            cursor: pointer;
+            }
+    </style>
+
+    <div class="main-title">
+        <p class="font-weight-bold">COMPOUNDS</p>
+    </div>
+    <div class="main-cards">
+            <div class="card">
+                <table class="container">
+                <thead>
+                  <tr>
+                      <th></th>
+                      <th><h3>Molecule Name</h3></h3></th>
+                      <th><h3>CID</h3></th>
+                      <th><h3>H-Acceptors</h3></th>
+                      <th><h3>H-Donors</h3></th>
+                      <th><h3>IUPC-INCHI</h3></th>
+                      <th><h3>Weight</h3></th>
+                      <th><h3>Formula</h3></th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                 {% for mol_properties in mols_with_properties %}
+                    <tr>
+                        <td><div style="float:middle; width:130px;height:130px;border:1px solid #000;">Picture goes here</div></td>
+                        <td>{{mol_properties.0}}</td>
+                        <td>{{mol_properties.1.1}}</td>
+                         <td>{{mol_properties.2.1}}</td>
+                         <td>{{mol_properties.3.1}}</td>
+                         <td>{{mol_properties.4.1}}</td>
+                         <td>{{mol_properties.5.1}}</td>
+                         <td>{{mol_properties.6.1}}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+                </table>
+
+                <div class="btn-group">
+                <button>Compare</button>
+                    <!-- Trigger/Open The Modal -->
+                <button id="myBtn" >Filter</button>
+
+                </div>
+
+                <!-- Filter option -->
+                <div id="myModal" class="modal">
+
+                  <!-- Modal content -->
+                  <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <p>Filter options</p>
+                  </div>
+                </div>
+            </div>
+    </div>
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal
+        btn.onclick = function() {
+          modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+          modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        }
+    </script>
+    {% endblock %}
