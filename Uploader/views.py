@@ -14,22 +14,21 @@ def SDFile_Upload(request):
             form.save()
             file = form['document'].value()
             file = str(file)
-            if file.endswith('.sdf'):
-                file_path = os.path.join(MEDIA_ROOT, 'uploaded_data/', file)
-                try:
-                    m = MoleculeIterator(file_path)
-                    m.iterate_over_molecules()
-                    data['form'] = form
-                    data['existing_uploads'] = {
-                        'headers': ['File', 'Set', 'Description']}
-                    data['existing_uploads']['data'] = [
-                        [file, 1, form['description'].value()]]
-                except ValueError:
-                    data['err_msg'] = 'Not a valid SDFile'
+            file_path = os.path.join(MEDIA_ROOT, 'uploaded_data/', file)
+            try:
+                m = MoleculeIterator(file_path)
+                m.iterate_over_molecules()
+                data['form'] = form
+                data['existing_uploads'] = {
+                    'headers': ['File', 'Set', 'Description']}
+                data['existing_uploads']['data'] = [
+                    [file, 1, form['description'].value()]]
+            except ValueError:
+                data['err_msg'] = 'Not a valid SDFile'
 
-            else:
-                err_msg = 'Not a SDFile'
-                data['err_msg'] = err_msg
+        else:
+            err_msg = 'Not a SDFile'
+            data['err_msg'] = err_msg
     return render(request, 'upload.html', data)
 
 
@@ -46,6 +45,7 @@ def SDFMultView(request):
     if request.method == 'POST':
         form = SDFileMult(request.POST, request.FILES)
         if form.is_valid():
+            data['form'] = form
             data['existing_uploads'] = \
                 {'headers': ['File', 'Set', 'Description'], 'data': []}
 
@@ -60,7 +60,6 @@ def SDFMultView(request):
                     data['err_msg'] = 'Not a valid SDFile'
                     continue
 
-                data['form'] = form
                 data['existing_uploads']['data'].append(
                     [file, 1, form['description'].value()])
         else:
