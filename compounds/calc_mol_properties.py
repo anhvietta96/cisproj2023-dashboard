@@ -37,6 +37,9 @@ class MoleculeProperties:
         Draws an image of the molecule.
         :param: dirname: directory, in which the image will be saved
         """
+        if not os.path.isdir(dirname):
+            os.mkdir(dirname)
+
         image_filename = os.path.join(dirname, f"{self.inchi_key}.png")
         Draw.MolToFile(self.mol, image_filename)
 

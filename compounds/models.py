@@ -31,6 +31,8 @@ class MoleculeSet(models.Model):
         primary_key=True)
     set_name = models.CharField(
         max_length=120, validators=[MinLengthValidator(1)])
+    description = models.CharField(
+        max_length=250, default=None, blank=True, null=True)
     molecules = models.ManyToManyField(Molecule)
 
     class Meta:

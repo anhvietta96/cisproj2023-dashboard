@@ -2,7 +2,24 @@ import os.path
 from django.shortcuts import render
 from .forms import SDFileForm, SDFileMult
 from dashboard.settings import MEDIA_ROOT
-from compounds.file_handler import MoleculeIterator
+from compounds.file_handler import MoleculeIterator, FileIterator
+
+
+class RequestFileIterator(FileIterator):
+    def __init__(self, dirname, files):
+        super().__init__(dirname)
+        self.files = files
+
+    def iterate_over_files(self):
+        for file in self.files:
+            file_path = os.path.join(self.dirname, file.name)
+
+            # Save file
+            with open(file_path, 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+
+            super()._handle_mol_iterator(file_path)
 
 
 def SDFile_Upload(request):

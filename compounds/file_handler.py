@@ -66,15 +66,19 @@ class FileIterator:
         for root, dirs, files in os.walk(self.dirname):
             for filename in files:
                 path_to_file = os.path.join(root, filename)
+                self._handle_mol_iterator(path_to_file)
 
-                try:
-                    mol_iterator = MoleculeIterator(path_to_file)
-                except ValueError:
-                    print(f"Skipped {path_to_file}", file=sys.stderr)
-                    continue
+    def _handle_mol_iterator(self, path_to_file):
+        try:
+            mol_iterator = MoleculeIterator(path_to_file)
+        except ValueError:
+            tmp_err_msg = f"Skipped {path_to_file}"
+            self.err_msgs.append(tmp_err_msg)
+            print(tmp_err_msg, file=sys.stderr)
+            return
 
-                mol_iterator.iterate_over_molecules()
-                self.mol_list.extend(mol_iterator.get_mol_list())
+        mol_iterator.iterate_over_molecules()
+        self.mol_list.extend(mol_iterator.get_mol_list())
 
     def get_mol_list(self) -> list[Molecule]:
         """
@@ -149,7 +153,9 @@ class MoleculeIterator:
                     self.mol_list.append(mol_instance)
                 if self.print_mol_dicts:
                     print(mol_props_instance)
-                # mol_props_instance.draw_image()
+
+                if self.image_dir is not None:
+                    mol_props_instance.draw_image(self.image_dir)
 
     def get_mol_list(self) -> list[Molecule]:
         """
