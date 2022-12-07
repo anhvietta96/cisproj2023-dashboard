@@ -62,23 +62,28 @@ class FileIterator:
             print(f"{dirname} is not a valid directory", file=sys.stderr)
             raise ValueError
 
-    def iterate_over_files(self):
+    def iterate_over_files(self) -> None:
         for root, dirs, files in os.walk(self.dirname):
             for filename in files:
                 path_to_file = os.path.join(root, filename)
                 self._handle_mol_iterator(path_to_file)
 
-    def _handle_mol_iterator(self, path_to_file):
+    def _handle_mol_iterator(self, path_to_file) -> bool:
+        """
+        :param path_to_file: path to a .sdf or .smi file
+        :return: True if MoleculeIterator was successfully, else False
+        """
         try:
             mol_iterator = MoleculeIterator(path_to_file)
         except ValueError:
             tmp_err_msg = f"Skipped {path_to_file}"
             self.err_msgs.append(tmp_err_msg)
             print(tmp_err_msg, file=sys.stderr)
-            return
+            return False
 
         mol_iterator.iterate_over_molecules()
         self.mol_list.extend(mol_iterator.get_mol_list())
+        return True
 
     def get_mol_list(self) -> list[Molecule]:
         """
@@ -162,9 +167,3 @@ class MoleculeIterator:
         Returns a list of all Molecule instances from self.filename
         """
         return self.mol_list
-
-
-if __name__ == '__main__':
-    drugs_filepath = 'Beispieldateien/Drugs/Drugs.sdf'
-    x = MoleculeIterator(drugs_filepath)
-    x.iterate_over_molecules()

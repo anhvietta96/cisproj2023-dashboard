@@ -15,8 +15,8 @@ class SDFileForm(forms.ModelForm):
 
 # Multiple file upload, must write resolution for name conflicts
 class SDFileMult(forms.Form):
-    set = forms.CharField(max_length=100)
-    description = forms.CharField(max_length=100)
+    set = forms.CharField(max_length=120)
+    description = forms.CharField(max_length=250)
     documents = forms.FileField(
         widget=forms.ClearableFileInput(attrs={'multiple': True}),
         validators=[FileExtensionValidator(allowed_extensions=['sdf', 'smi'])])
