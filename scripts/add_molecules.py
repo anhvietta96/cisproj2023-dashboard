@@ -1,4 +1,4 @@
-from compounds.calc_mol_properties import FileIterator
+from compounds.file_handler import FileIterator
 from dashboard.settings import MEDIA_ROOT
 
 

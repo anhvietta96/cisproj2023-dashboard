@@ -2,7 +2,7 @@ import os.path
 from django.shortcuts import render
 from .forms import SDFileForm, SDFileMult
 from dashboard.settings import MEDIA_ROOT
-from compounds.calc_mol_properties import MoleculeIterator
+from compounds.file_handler import MoleculeIterator
 
 
 def SDFile_Upload(request):

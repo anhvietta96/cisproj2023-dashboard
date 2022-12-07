@@ -1,4 +1,4 @@
-from compounds.calc_mol_properties import insert_into_new_set
+from compounds.file_handler import insert_into_new_set
 from dashboard.settings import MEDIA_ROOT
 
 
