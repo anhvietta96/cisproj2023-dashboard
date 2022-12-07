@@ -1,25 +1,90 @@
 {% extends 'base.html' %}
 
     {% block main %}
-                <div class="main-title">
-                    <p class="font-weight-bold">DASHBOARD</p>
-                </div>
-                <div class="main-cards">
-                    <div class="card">
-                        <div class="card-inner">
-                            <p class="text-primary">Compounds</p>
-                            <span class="material-icons-outlined">inventory_2</span>
-                        </div>
-                    </div>
-                </div>
+                <head>
+                <style>
+                h1 {
+                    text-align: center;
+                }
+                
+                cont {
+                    background-color: lightyellow;
+                    width: 320px;
+                    padding 50px;
+                    margin: 20px;
+                }
+                    
+            
+                .button {
+                    border: none;
+                    color: white;
+                    padding: 16px 32px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 4px 2px;
+                    transition-duration: 0.4s;
+                    cursor: pointer;
+                }
+
+                .button1 {
+                    background-color: gray;
+                    color: white;
+                    border: 2px solid #808080;
+                }
+
+                .button1:hover {
+                    background-color: #303030;
+                    color: white;
+                }
+                
+                .float-container {
+                    border: 3px solid #fff;
+                    padding: 20px;
+                }
+
+                .float-child1 {
+                    width: 49%;
+                    float: left;
+                    padding: 0px;
+                    border: 0px;
+                }
+                
+                .float-child2 {
+                    width: 49%;
+                    float: right;
+                    padding: 0px;
+                    border: 0px;
+                }
+                </style>
+                </head>
+                <!-- main homepage text -->
+                    <cont>
+                    <h1 class="font-weight-bold">Visualisation is important.</h1>
+                    <center>
+                    <p> Despite being able to describe abstract models well, SDF datas might not be the easiest to understand and visualize.
+                    <br>Our tool processes your SDF files and represent in in a way that the human eye can understand. </p>
+                <!-- button that redirects to uoload page -->
+                <a href="/upload">
+                    <button class="button button1">Get Started</button>
+                    </a>
+                    </center>
+                    </cont>
+                <br> <br>
+                <h3>Here are some ways in which we can represent your data:</h3>
                 <div class="chart">
+                    <div class="float-child1">
                     <div class="charts-card">
                         <p class="chart-title">Line Chart</p>
                         <div id="area-chart"></div>
                     </div>
+                    </div>
+                    <div class="float-child2">
                     <div class="charts-card">
                         <p class="chart-title">Scatter Plot</p>
                         <div id="scatter-chart"></div>
+                    </div>
                     </div>
                 </div>
     {% endblock %}
