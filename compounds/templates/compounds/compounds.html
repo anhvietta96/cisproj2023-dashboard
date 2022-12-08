@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 
     {% block main %}
+    <head>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    </head>
 
     <style>
-        table, th, td {
-            border: 1px solid;
-        }
+
 
         .btn-group button {
           display: inline-block;
@@ -209,6 +210,9 @@
                   </tr>
                 </thead>
                 <tbody>
+                    <tr class="clickable">
+                            <td colspan=8>Setname</td>
+                        </tr>
                  {% for mol_properties in mols_with_properties %}
                     <tr>
                         <td><div style="float:middle; width:130px;height:130px;border:1px solid #000;">Picture goes here</div></td>
@@ -268,5 +272,13 @@
             modal.style.display = "none";
           }
         }
+    </script>
+    <script type="text/javascript">
+
+
+    $('tr.clickable').click(function() {
+        $(this).siblings().toggle();
+    });
+
     </script>
     {% endblock %}
