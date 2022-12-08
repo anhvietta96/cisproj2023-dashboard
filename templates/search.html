@@ -2,11 +2,9 @@
     {% block main %}
         <table style="width:100%">
             <tr>
-                <th>inchi_key</th>
-                <th>log_p</th>
-                <th>n_h_a</th>
-                <th>n_h_b</th>
-                <th>mass</th>
+                {% for entry in header %}
+                    <th>{{entry}}</th>
+                {% endfor %}
             </tr>
             {% for row in table %}
             <tr>

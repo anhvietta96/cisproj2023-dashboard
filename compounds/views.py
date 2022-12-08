@@ -63,5 +63,5 @@ def search_results(request):
         for property in property_list:
             value_list.append(getattr(mol, property))
         search_results.append(value_list)
-    data = {'table': search_results}
+    data = {'header':property_list,'table': search_results}
     return render(request, 'search.html', data)

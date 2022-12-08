@@ -2,6 +2,8 @@
 
 var sidebarOpen = false
 var sidebar = document.getElementById("sidebar")
+
+
 function openSidebar() {
     if(!sidebarOpen)
         sidebar.classList.add("sidebar-responsive");
@@ -13,45 +15,37 @@ function closeSidebar() {
         sidebar.classList.remove("sidebar-responsive");
         sidebarOpen = false;
 }
+/*
+const ctx = document.getElementById('#area-chart');
 
-var areaChartOptions = {
-    series: [{
-        name: 'Var 1',
-        data: [31,40,28,51,42,109,200]
-    }],
-    chart: {
-            height: 350,
-            type: 'area',
-            toolbar:{
-                show: false,
-            },
-        },
-        color: ["#4f35a1"],
-        dataLabels: {
-            enabled: false,
-        },
-        stroke:{
-            curve:"smooth"
-        },
-        label:["X1","X2","X3","X4","X5","X6","X7"],
-        markers:{
-            size: 0
-        },
-        yaxis:[
-            {
-                title:{
-                    text:'Value',
-                },
-            }
-        ],
-        tooltip: {
-            shared: true,
-            intersect: false,
-        }
-};
+new Chart(ctx, {
+  type: 'bar',
+  data:{
+    labels:['Red','Blue','Yellow','Green','Purple','Orange'],
+    datasets:[{label:'# of Votes',
+              data:[12.19,3,5,2,3],
+            borderWidth: 1}]},
+  options:{
+    scales: {
+      y:{
+        beginAtZero:true
+      }
+    }
+  }
+});
+*/
 
-var areaChart = new ApexCharts(document.querySelector("#area-chart"),areaChartOptions);
-areaChart.render()
+var chart = c3.generate({
+  bindto: '#chart',
+  data: {
+    columns: [
+      ['data1', 30, 200, 100, 400, 150, 250],
+      ['data2', 50, 20, 10, 40, 15, 25]
+    ]
+  }
+});
+
+
 
 var ScatterOptions = {
     series: [{

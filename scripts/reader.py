@@ -20,5 +20,7 @@ def run():
                     subst.log_p = substance.GetProp('PUBCHEM_XLOGP3')
                     subst.num_h_acceptors = substance.GetProp('PUBCHEM_CACTVS_HBOND_ACCEPTOR')
                     subst.num_h_donors = substance.GetProp('PUBCHEM_CACTVS_HBOND_DONOR')
-                    subst.molecular_mass = substance.GetProp('PUBCHEM_MOLECULAR_WEIGHT')
+                    subst.molecular_weight = substance.GetProp('PUBCHEM_MOLECULAR_WEIGHT')
+                    subst.molecular_formula = substance.GetProp('PUBCHEM_MOLECULAR_FORMULA')
+                    subst.num_rotatable_bonds = substance.GetProp('PUBCHEM_CACTVS_ROTATABLE_BOND')
                     subst.save()
