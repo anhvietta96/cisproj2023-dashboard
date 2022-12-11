@@ -5,6 +5,9 @@ from compounds.models import MoleculeSet
 
 class RequestFileIterator(FileIterator):
     def __init__(self, dirname, files, form):
+        if not os.path.isdir(dirname):
+            os.mkdir(dirname)
+
         super().__init__(dirname)
         self.files = files
         self.form = form

@@ -199,13 +199,15 @@
                 <thead>
                   <tr>
                       <th></th>
-                      <th><h3>Molecule Name</h3></h3></th>
-                      <th><h3>CID</h3></th>
+                      <th><h3>InchiKey</h3></h3></th>
+                      <th><h3>logP</h3></th>
+                      <th><h3>Formula</h3></th>
+                      <th><h3>Weight</h3></th>
                       <th><h3>H-Acceptors</h3></th>
                       <th><h3>H-Donors</h3></th>
-                      <th><h3>IUPC-INCHI</h3></th>
-                      <th><h3>Weight</h3></th>
-                      <th><h3>Formula</h3></th>
+                      <th><h3>Rotatable Bonds</h3></th>
+                      <th><h3>Rings</h3></th>
+
 
                   </tr>
                 </thead>
@@ -213,16 +215,17 @@
                     <tr class="clickable">
                             <td colspan=8>Setname</td>
                         </tr>
-                 {% for mol_properties in mols_with_properties %}
+                 {% for mol in molecules %}
                     <tr>
                         <td><div style="float:middle; width:130px;height:130px;border:1px solid #000;">Picture goes here</div></td>
-                        <td>{{mol_properties.0}}</td>
-                        <td>{{mol_properties.1.1}}</td>
-                         <td>{{mol_properties.2.1}}</td>
-                         <td>{{mol_properties.3.1}}</td>
-                         <td>{{mol_properties.4.1}}</td>
-                         <td>{{mol_properties.5.1}}</td>
-                         <td>{{mol_properties.6.1}}</td>
+                        <td>{{mol.inchi_key}}</td>
+                        <td>{{mol.log_p}}</td>
+                         <td>{{mol.molecular_formula}}</td>
+                         <td>{{mol.molecular_weight}}</td>
+                         <td>{{mol.num_h_acceptors}}</td>
+                         <td>{{mol.num_h_donors}}</td>
+                         <td>{{mol.num_rotatable_bonds}}</td>
+                         <td>{{mol.num_rings}}</td>
                     </tr>
                   {% endfor %}
                 </tbody>
