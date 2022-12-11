@@ -1,5 +1,7 @@
+import os.path
 from django.db import models
 from django.core.validators import MinLengthValidator, MinValueValidator
+from dashboard.settings import MEDIA_ROOT
 
 
 class Molecule(models.Model):
@@ -21,6 +23,17 @@ class Molecule(models.Model):
         default=None, blank=True, null=True)
     num_rings = models.PositiveSmallIntegerField(
         default=None, blank=True, null=True)
+    image = models.ImageField(
+        default=None, blank=True, null=True, max_length=32,
+        upload_to=os.path.join(MEDIA_ROOT, 'images/'))
+
+    def num_satisfied_lipinski_rules(self):
+        lipinskis_ro5 = (self.molecular_weight < 500,
+                         self.num_h_acceptors <= 10,
+                         self.num_h_donors <= 5,
+                         self.log_p < 5)
+
+        return sum(lipinskis_ro5)
 
     def __str__(self):
         return f"inchi_key={self.inchi_key}"

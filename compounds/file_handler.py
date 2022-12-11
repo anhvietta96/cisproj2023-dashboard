@@ -113,21 +113,19 @@ class MoleculeIterator:
     def __init__(self,
                  filename: str,
                  image_dir: str = os.path.join(MEDIA_ROOT, 'images'),
-                 save_model_instances: bool = True,
-                 print_mol_dicts: bool = False,
+                 save_model_list: bool = True,
                  multithreaded: bool = False):
 
+        self.save_model_list = save_model_list
         self.filename = filename
         self.supplier = None
         self.image_dir = image_dir
         self.multithreaded = multithreaded
-        self.print_mol_dicts = print_mol_dicts
-        self.save_model_list = save_model_instances
         self.mol_list = []
         self.err_msgs = []
 
         if not os.path.isfile(filename):
-            print(f"{filename} is not a valid file", file=sys.stderr)
+            print(f"{filename} does not exist", file=sys.stderr)
             raise ValueError
 
         if filename.endswith('.sdf'):
@@ -156,8 +154,6 @@ class MoleculeIterator:
 
                 if self.save_model_list:
                     self.mol_list.append(mol_instance)
-                if self.print_mol_dicts:
-                    print(mol_props_instance)
 
                 if self.image_dir is not None:
                     mol_props_instance.draw_image(self.image_dir)
