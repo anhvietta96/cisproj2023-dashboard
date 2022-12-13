@@ -59,8 +59,7 @@ class FileIterator:
         self.err_msgs = []
 
         if not os.path.isdir(dirname):
-            print(f"{dirname} is not a valid directory", file=sys.stderr)
-            raise ValueError
+            raise ValueError(f"{dirname} is not a valid directory")
 
     def iterate_over_files(self) -> None:
         for root, dirs, files in os.walk(self.dirname):
@@ -68,13 +67,14 @@ class FileIterator:
                 path_to_file = os.path.join(root, filename)
                 self._handle_mol_iterator(path_to_file)
 
-    def _handle_mol_iterator(self, path_to_file) -> bool:
+    def _handle_mol_iterator(self, path_to_file: str) -> bool:
         """
         :param path_to_file: path to a .sdf or .smi file
         :return: True if MoleculeIterator was successfully, else False
         """
+        image_dir = os.path.join(MEDIA_ROOT, 'images')
         try:
-            mol_iterator = MoleculeIterator(path_to_file)
+            mol_iterator = MoleculeIterator(path_to_file, image_dir)
         except ValueError:
             tmp_err_msg = f"Skipped {path_to_file}"
             self.err_msgs.append(tmp_err_msg)
@@ -128,6 +128,9 @@ class MoleculeIterator:
             print(f"{filename} does not exist", file=sys.stderr)
             raise ValueError
 
+        if not os.path.isdir(self.image_dir):
+            os.makedirs(self.image_dir)
+
         if filename.endswith('.sdf'):
             self.supplier = Chem.SDMolSupplier if not multithreaded \
                 else Chem.MultithreadedSDMolSupplier
@@ -149,14 +152,11 @@ class MoleculeIterator:
                     print("Cannot parse molecule", file=sys.stderr)
                     continue
 
-                mol_props_instance = MoleculeProperties(mol)
+                mol_props_instance = MoleculeProperties(mol, self.image_dir)
                 mol_instance = mol_props_instance.save_molecule()
 
                 if self.save_model_list:
                     self.mol_list.append(mol_instance)
-
-                if self.image_dir is not None:
-                    mol_props_instance.draw_image(self.image_dir)
 
     def get_mol_list(self) -> list[Molecule]:
         """

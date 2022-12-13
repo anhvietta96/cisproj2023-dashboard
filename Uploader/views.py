@@ -1,4 +1,5 @@
 import os.path
+from django.http import HttpRequest
 from django.shortcuts import render
 from .forms import SDFileForm, SDFileMult
 from dashboard.settings import MEDIA_ROOT
@@ -6,7 +7,7 @@ from compounds.file_handler import MoleculeIterator
 from Uploader.file_handler import RequestFileIterator
 
 
-def SDFile_Upload(request):
+def SDFile_Upload(request: HttpRequest):
     form = SDFileForm()
     data = {'form': form}
     if request.method == 'POST':
@@ -30,10 +31,10 @@ def SDFile_Upload(request):
         else:
             err_msg = 'Not a SDFile'
             data['err_msg'] = err_msg
-    return render(request, 'upload.html', data)
+    return render(request, 'Uploader/upload.html', data)
 
 
-def SDFMultView(request):
+def SDFMultView(request: HttpRequest):
     form = SDFileMult()
     data = {'form': form}
 
@@ -49,4 +50,4 @@ def SDFMultView(request):
             request_file_iterator.add_to_new_set()
         else:
             data['err_msg'] = 'Not a valid SDFile'
-    return render(request, 'upload.html', data)
+    return render(request, 'Uploader/upload.html', data)

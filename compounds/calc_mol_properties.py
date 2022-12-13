@@ -12,11 +12,12 @@ class MoleculeProperties:
     Class to calculate molecular properties
     """
 
-    def __init__(self, mol):
+    def __init__(self, mol, image_dir: str):
         """
         :param mol: molecule of interest, provided by a supplier
         """
         self.mol = mol
+        self.image_dir = image_dir
 
         # primary key
         self.inchi_key = inchi.MolToInchiKey(self.mol)
@@ -32,16 +33,14 @@ class MoleculeProperties:
         self.num_rings = rdMolDescriptors.CalcNumRings(self.mol)
         self.rotatable_bonds = Lipinski.NumRotatableBonds(self.mol)
 
-    def draw_image(self, dirname: str = 'images') -> None:
+    def draw_image(self) -> str:
         """
-        Draws an image of the molecule.
-        :param: dirname: directory, in which the image will be saved
+        Draws an image of the molecule and saves it to an existing directory.
+        :return: path to the image file
         """
-        if not os.path.isdir(dirname):
-            os.mkdir(dirname)
-
-        image_filename = os.path.join(dirname, f"{self.inchi_key}.png")
-        Draw.MolToFile(self.mol, image_filename)
+        image_path = os.path.join(self.image_dir, f"{self.inchi_key}.png")
+        Draw.MolToFile(self.mol, image_path)
+        return image_path
 
     def return_dict(self) -> dict:
         """
@@ -66,6 +65,8 @@ class MoleculeProperties:
         :return: Instance of saved Molecule
         :rtype: Molecule
         """
+        image_path = self.draw_image() if self.image_dir else None
+
         m = Molecule(
             inchi_key=self.inchi_key,
             log_p=self.log_p,
@@ -74,7 +75,8 @@ class MoleculeProperties:
             num_h_acceptors=self.num_h_acceptors,
             num_h_donors=self.num_h_donors,
             num_rings=self.num_rings,
-            num_rotatable_bonds=self.rotatable_bonds
+            num_rotatable_bonds=self.rotatable_bonds,
+            image=image_path
         )
         m.save()
         return m

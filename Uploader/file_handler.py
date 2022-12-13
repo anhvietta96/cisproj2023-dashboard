@@ -1,6 +1,7 @@
 import os.path
 from compounds.file_handler import FileIterator
 from compounds.models import MoleculeSet
+from time import perf_counter
 
 
 class RequestFileIterator(FileIterator):
@@ -11,6 +12,10 @@ class RequestFileIterator(FileIterator):
         super().__init__(dirname)
         self.files = files
         self.form = form
+        self.set_name = self.form['set_name'].value()
+        self.set_description = self.form['description'].value()
+
+        # Front-End
         self.data = {
             'form': self.form,
             'existing_uploads': {
@@ -29,10 +34,7 @@ class RequestFileIterator(FileIterator):
 
             if super()._handle_mol_iterator(file_path):
                 self.data['existing_uploads']['data'].append(
-                    [file,
-                     self.form['set'].value(),
-                     self.form['description'].value()]
-                )
+                    [file, self.set_name, self.set_description])
 
     def get_data_dict(self):
         self.data['err_msg'] = "\n".join(self.err_msgs)
@@ -40,8 +42,8 @@ class RequestFileIterator(FileIterator):
 
     def add_to_new_set(self):
         mol_set = MoleculeSet(
-            set_name=self.form['set'].value(),
-            description=self.form['description'].value())
+            set_name=self.set_name,
+            description=self.set_description)
         mol_set.save()
         mol_set.molecules.add(*self.get_mol_list())
         mol_set.save()

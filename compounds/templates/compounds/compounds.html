@@ -207,8 +207,6 @@
                       <th><h3>H-Donors</h3></th>
                       <th><h3>Rotatable Bonds</h3></th>
                       <th><h3>Rings</h3></th>
-
-
                   </tr>
                 </thead>
                 <tbody>
@@ -217,15 +215,19 @@
                         </tr>
                  {% for mol in molecules %}
                     <tr>
-                        <td><div style="float:middle; width:130px;height:130px;border:1px solid #000;">Picture goes here</div></td>
+                        <td>
+                            {% if mol.image %}
+                            <img src="{{mol.image.url}}" width="130" height="130" />
+                            {% endif %}
+                        </td>
                         <td>{{mol.inchi_key}}</td>
                         <td>{{mol.log_p}}</td>
-                         <td>{{mol.molecular_formula}}</td>
-                         <td>{{mol.molecular_weight}}</td>
-                         <td>{{mol.num_h_acceptors}}</td>
-                         <td>{{mol.num_h_donors}}</td>
-                         <td>{{mol.num_rotatable_bonds}}</td>
-                         <td>{{mol.num_rings}}</td>
+                        <td>{{mol.molecular_formula}}</td>
+                        <td>{{mol.molecular_weight}}</td>
+                        <td>{{mol.num_h_acceptors}}</td>
+                        <td>{{mol.num_h_donors}}</td>
+                        <td>{{mol.num_rotatable_bonds}}</td>
+                        <td>{{mol.num_rings}}</td>
                     </tr>
                   {% endfor %}
                 </tbody>

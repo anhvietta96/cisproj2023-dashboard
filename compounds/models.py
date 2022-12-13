@@ -11,7 +11,7 @@ class Molecule(models.Model):
     log_p = models.FloatField(
         default=None, blank=True, null=True)
     molecular_formula = models.CharField(
-        default=None, blank=True, null=True, max_length=40,
+        default=None, blank=True, null=True, max_length=50,
         validators=[MinLengthValidator(1)])
     molecular_weight = models.FloatField(
         default=None, blank=True, null=True, validators=[MinValueValidator(0)])
@@ -24,7 +24,7 @@ class Molecule(models.Model):
     num_rings = models.PositiveSmallIntegerField(
         default=None, blank=True, null=True)
     image = models.ImageField(
-        default=None, blank=True, null=True, max_length=32,
+        default=None, blank=True, null=True, max_length=255,
         upload_to=os.path.join(MEDIA_ROOT, 'images/'))
 
     def num_satisfied_lipinski_rules(self):
