@@ -1,5 +1,5 @@
 /*ApexCharts Lib, functional but deprecated */
-/*
+
 var dynamicchart_bool = document.getElementById("dynamic-chart");
 if(dynamicchart_bool){
   const options = JSON.parse(document.currentScript.nextElementSibling.textContent);
@@ -7,9 +7,10 @@ if(dynamicchart_bool){
   var chart = new ApexCharts(document.querySelector('#dynamic-chart'),options);
   chart.render();
 }
-*/
+
 
 /*Echarts Lib, functional*/
+/*
 var chartDom = document.getElementById('dynamic-chart');
 if(chartDom) {
   var Chart = echarts.init(chartDom,null,{width:900, height:450});
@@ -81,3 +82,4 @@ if(chartDom) {
   };
   option && Chart.setOption(option);
 }
+*/

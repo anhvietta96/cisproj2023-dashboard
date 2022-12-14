@@ -16,7 +16,6 @@ def ChartOptions(request):
     data['property_list']=property_list
     return render(request,'chart_options.html',data)
 
-'''
 def ChartResult(request):
     
     x_axis = int(request.POST.get('x-axis')[0])-1
@@ -42,8 +41,8 @@ def ChartResult(request):
     ChartOptions["series"]=data
     result = {'title':'Created Chart','options':ChartOptions}
     return render(request,'chart_result.html',result)
-'''
 
+'''
 def ChartResult(request):
     
     x_axis = int(request.POST.get('x-axis')[0])-1
@@ -76,3 +75,4 @@ def ChartResult(request):
     result = {'title':'Created Chart','options':ChartOptions}
     
     return render(request,'chart_result.html',result)
+'''
