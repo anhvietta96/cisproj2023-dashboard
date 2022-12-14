@@ -210,26 +210,29 @@
                   </tr>
                 </thead>
                 <tbody>
+                    {% for set in sets %}
                     <tr class="clickable">
-                            <td colspan=8>Setname</td>
-                        </tr>
-                 {% for mol in molecules %}
-                    <tr>
-                        <td>
-                            {% if mol.image %}
-                            <img src="{{mol.image.url}}" width="130" height="130" />
-                            {% endif %}
-                        </td>
-                        <td>{{mol.inchi_key}}</td>
-                        <td>{{mol.log_p}}</td>
-                        <td>{{mol.molecular_formula}}</td>
-                        <td>{{mol.molecular_weight}}</td>
-                        <td>{{mol.num_h_acceptors}}</td>
-                        <td>{{mol.num_h_donors}}</td>
-                        <td>{{mol.num_rotatable_bonds}}</td>
-                        <td>{{mol.num_rings}}</td>
+                        <td colspan=8>{{set.set_name}}</td>
                     </tr>
-                  {% endfor %}
+                        {% for mol in set.molecules.all %}
+                        <tr>
+                            <td>
+                            {% if mol.image %}
+                                <img src="{{mol.image.url}}" width="130"
+                                     height="130" />
+                            {% endif %}
+                            </td>
+                            <td>{{mol.inchi_key}}</td>
+                            <td>{{mol.log_p}}</td>
+                            <td>{{mol.molecular_formula}}</td>
+                            <td>{{mol.molecular_weight}}</td>
+                            <td>{{mol.num_h_acceptors}}</td>
+                            <td>{{mol.num_h_donors}}</td>
+                            <td>{{mol.num_rotatable_bonds}}</td>
+                            <td>{{mol.num_rings}}</td>
+                        </tr>
+                        {% endfor %}
+                    {% endfor %}
                 </tbody>
                 </table>
 

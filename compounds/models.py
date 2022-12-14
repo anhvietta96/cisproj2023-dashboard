@@ -25,7 +25,7 @@ class Molecule(models.Model):
         default=None, blank=True, null=True)
     image = models.ImageField(
         default=None, blank=True, null=True, max_length=255,
-        upload_to=os.path.join(MEDIA_ROOT, 'images/'))
+        upload_to='media/images')
 
     def num_satisfied_lipinski_rules(self):
         lipinskis_ro5 = (self.molecular_weight < 500,
