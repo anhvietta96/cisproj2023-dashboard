@@ -4,12 +4,19 @@
         <div class="chart">
             <div class="charts-card">
                 <p class="chart-title">{{title}}</p>
-                <div style="width:1050px;height:600px;" id="dynamic-chart">
+                <div>
+                    <canvas id="dynamic-chart"></canvas>
                 </div>
                 
                 {% load static %}
                 <script src="{% static 'js/chart.js'%}" defer></script>
                 {{options|json_script}}
+            </div>
+            <div class="charts-card">Filters
+                <button id="apply-filter">Apply</button>
+                <div id="filters">
+                    <button id="add-filter">Add Filter</button>
+                </div>
             </div>
         </div>
     {% endblock %}
