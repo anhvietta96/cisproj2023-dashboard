@@ -154,7 +154,7 @@ option = {
             else{
               string = '0';
             }
-            return [`${param.data[0]}\n${param.data[1]}\n${param.data[2]}\n${param.data[3]}`].join('\n');
+            return [`{Image_${string}|}`,`${param.data[0]}\n${param.data[1]}\n${param.data[2]}\n${param.data[3]}`].join('\n');
           },
           position: 'top',
           color: '#000',
