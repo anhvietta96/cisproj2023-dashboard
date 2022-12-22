@@ -11,7 +11,6 @@ if(dynamicchart_bool){
 
 function numerical_filter(data,pos,lower_bound,upper_bound)
 {
-  
   var filtered_data = [];
   for(const i of Object.keys(data))
   {
@@ -31,17 +30,42 @@ function numerical_filter(data,pos,lower_bound,upper_bound)
 
 function lexicographic_filter(data,pos,substring)
 {
-  for(let i = 0;i<data.length;i++)
+  var filtered_data = [];
+  for(const i of Object.keys(data))
   {
+    var sub_arr = [];
     for(let j = 0;j<data[i].length;j++)
     {
-      if(!data[i][j][pos].includes(substring))
+      if(data[i][j][pos].includes(substring))
       {
-        delete data[i][j];
+        sub_arr.push(data[i][j]);
       }
     }
+    filtered_data.push(sub_arr);
   }
-  return;
+  return filtered_data;
+}
+
+function get_new_max_vals(data)
+{
+  var xy_min_max = [null,null,null,null];
+  let x_values = [];
+  let y_values = [];
+  let x_col = [];
+  let y_col = []
+  for(let i = 0; i < data.length;i++)
+  {
+    x_col = data[i].map(function(value,index){return value[0];});
+    x_values.push.apply(x_values,x_col);
+    y_col = data[i].map(function(value,index){return value[1];});
+    y_values.push.apply(y_values,y_col);
+  }
+  xy_min_max[0] = Math.min.apply(null,x_values);
+  xy_min_max[1] = Math.max.apply(null,x_values);
+  xy_min_max[2] = Math.min.apply(null,y_values);
+  xy_min_max[3] = Math.max.apply(null,y_values);
+
+  return xy_min_max;
 }
 
 /*Echarts Lib, functional*/
@@ -51,11 +75,12 @@ var option;
 
 var chartDom = document.getElementById('dynamic-chart');
 if(chartDom) {
-  Chart = echarts.init(chartDom,null,{width:1500, height:1260});
+  Chart = echarts.init(chartDom,null,{width:1300, height:800});
   ChartOptions = JSON.parse(document.currentScript.nextElementSibling.textContent);
   var tooltip_col = ChartOptions['header'];
   var chart_data = ChartOptions['data'];
-  
+
+  /*
   var x_values = [];
   var y_values = [];
   var x_col = [];
@@ -72,6 +97,9 @@ if(chartDom) {
   var x_max = Math.max.apply(null,x_values);
   var y_min = Math.min.apply(null,y_values);
   var y_max = Math.max.apply(null,y_values);
+  */
+  var xy_min_max = get_new_max_vals(chart_data);
+
   var series_val = [];
   var series = null;
   var rich_text = `{"Attr":{"width": 60,"align":"left","padding":[0,10,0,10]},"Val":{"width": 90,"align":"right","padding":[0,10,0,10]},`;
@@ -148,11 +176,25 @@ if(chartDom) {
       top: 0,
       bottom: 0
       },xAxis: {
-      min: x_min-0.1,
-      max: x_max+0.1,},
+      min: xy_min_max[0]-0.1,
+      max: 1.1*xy_min_max[1],
+      name: ChartOptions['header'][0],
+      nameLocation: 'end',
+      nameTextStyle:{
+        fontWeight:'bold',
+        fontSize: 12,
+        borderType: 'solid',
+
+    },},
     yAxis: {
-      min: y_min-0.1,
-      max: y_max+0.1,},
+      min: xy_min_max[2]-0.1,
+      max: 1.2*xy_min_max[3],
+      name: ChartOptions['header'][1],
+      nameLocation: 'middle',
+      nameTextStyle:{
+        fontWeight:'bold',
+        fontSize: 12,
+        borderType: 'solid',},},
     series: series_val,
   };
   option && Chart.setOption(option);
@@ -271,6 +313,11 @@ $(document).ready(function(){
     {
       option['series'][i]['data'] = curr_data[i];
     }
+    var xy_min_max = get_new_max_vals(curr_data);
+    option['xAxis']['min'] = xy_min_max[0]-0.1;
+    option['xAxis']['max'] = xy_min_max[1]*1.1;
+    option['yAxis']['min'] = xy_min_max[2]-0.1;
+    option['yAxis']['max'] = xy_min_max[3]*1.2;
     option && Chart.setOption(option);
     return;
   });
