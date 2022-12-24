@@ -3,8 +3,9 @@ Methods for the calculation of molecular properties
 """
 import os.path
 from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, inchi, \
-    Crippen, Draw
+    Crippen, Draw, rdchem
 from .models import Molecule
+from typing import Optional
 
 
 class MoleculeProperties:
@@ -12,12 +13,14 @@ class MoleculeProperties:
     Class to calculate molecular properties
     """
 
-    def __init__(self, mol, image_dir: str):
+    def __init__(self, mol: rdchem.Mol, image_dir: Optional[str] = None):
         """
         :param mol: molecule of interest, provided by a supplier
+        :param image_dir: directory in which the gererated image will be saved
         """
         self.mol = mol
         self.image_dir = image_dir
+        self.name = None
 
         # primary key
         self.inchi_key = inchi.MolToInchiKey(self.mol)
@@ -33,23 +36,38 @@ class MoleculeProperties:
         self.num_rings = rdMolDescriptors.CalcNumRings(self.mol)
         self.rotatable_bonds = Lipinski.NumRotatableBonds(self.mol)
 
-    def draw_image(self) -> str:
+    def search_for_name(self, name_list) -> Optional[str]:
         """
-        Draws an image of the molecule and saves it to an existing directory.
-        :return: path to the image file
+        Searches for the name of the molecule in name_list and initializes
+        self.name
+        :param name_list: Iterable which includes list of properties describing
+            the name of the molecule which could occur in self.mol
+        :return: name of the molecule if the name has been found
         """
-        image_path = os.path.join(self.image_dir, f"{self.inchi_key}.png")
-        Draw.MolToFile(self.mol, image_path)
-        return image_path
+        for name_prop in name_list:
+            if self.mol.HasProp(name_prop):
+                self.name = self.mol.GetProp(name_prop)
+                return self.name
+
+    def draw_image(self) -> Optional[str]:
+        """
+        Draws an image of the molecule and saves it to the given
+        image directory.
+        :return: path to the image file if self.image_dir is not None
+        """
+        if self.image_dir is not None:
+            image_path = os.path.join(self.image_dir, f"{self.inchi_key}.png")
+            Draw.MolToFile(self.mol, image_path)
+            return image_path
 
     def return_dict(self) -> dict:
         """
         Returns a dictionary of molecule properties
         :return: dictionary of molecular descriptors
-        :rtype: dict
         """
         return {
             'inchi_key': self.inchi_key,
+            'name': self.name,
             'log_p': self.log_p,
             'molecular_formula': self.molecular_formula,
             'molecular_weight': self.molecular_weight,
@@ -63,12 +81,12 @@ class MoleculeProperties:
         """
         Saves molecular properties
         :return: Instance of saved Molecule
-        :rtype: Molecule
         """
-        image_path = self.draw_image() if self.image_dir else None
+        image_path = self.draw_image() if self.image_dir is not None else None
 
         m = Molecule(
             inchi_key=self.inchi_key,
+            name=self.name,
             log_p=self.log_p,
             molecular_formula=self.molecular_formula,
             molecular_weight=self.molecular_weight,

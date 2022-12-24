@@ -1,12 +1,12 @@
-import os.path
 from django.db import models
 from django.core.validators import MinLengthValidator, MinValueValidator
-from dashboard.settings import MEDIA_ROOT
 
 
 class Molecule(models.Model):
     inchi_key = models.CharField(
         primary_key=True, max_length=27, validators=[MinLengthValidator(27)])
+    name = models.TextField(
+        default=None, blank=True, null=True)
 
     log_p = models.FloatField(
         default=None, blank=True, null=True)
@@ -25,7 +25,7 @@ class Molecule(models.Model):
         default=None, blank=True, null=True)
     image = models.ImageField(
         default=None, blank=True, null=True, max_length=255,
-        upload_to='media/images')
+        upload_to='images/')
 
     def num_satisfied_lipinski_rules(self):
         lipinskis_ro5 = (self.molecular_weight < 500,
