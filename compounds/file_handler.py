@@ -7,6 +7,7 @@ from rdkit import Chem
 from .models import Molecule, MoleculeSet
 from .calc_mol_properties import MoleculeProperties
 from django.conf import settings
+from typing import Optional
 
 
 def insert_into_new_set(dirname: str, set_name: str = '') -> None:
@@ -56,8 +57,10 @@ class MoleculeIterator:
                  image_dir: str = os.path.join(settings.MEDIA_ROOT, 'images'),
                  save_model_list: bool = True):
         """
-        :param image_dir: path to the directory, in which the images will be saved
-        :param save_model_list: if True, Molecule instances will be saved and can later be added to the set
+        :param image_dir: path to the directory, in which the images
+            will be saved
+        :param save_model_list: if True, Molecule instances will be saved and
+            can later be added to the set
         """
 
         self.save_model_list = save_model_list
@@ -94,7 +97,8 @@ class MoleculeIterator:
 
     def __get_supplier(self, file_path: str):
         """
-        Validates file exists and has a valid extension and returns a matching Supplier
+        Validates file exists and has a valid extension and returns a matching
+        Supplier
         :param file_path: path to an .sdf or .smi file
         :return: Supplier for parsing the file.
             If file is invalid, returns None
@@ -113,7 +117,8 @@ class MoleculeIterator:
 
     def get_mol_list(self) -> list[Molecule]:
         """
-        Returns a list of all Molecule instances which have already been processed
+        Returns a list of all Molecule instances which have already
+        been processed
         :return: list of Molecule instances
         """
         return self.mol_list
@@ -140,18 +145,23 @@ class MoleculeIterator:
         molecule_set.molecules.add(*self.mol_list)
         molecule_set.save()
 
-    def add_to_new_set(self, set_name: str, set_description: str):
+    def add_to_new_set(self, set_name: str, set_description: Optional[str]):
         """
-        Creates a new set with the given set_name and set_description and adds the Molecules to the set
+        Creates a new set with the given set_name and set_description and adds
+        the Molecules to the set
         :param set_name: name of the set
         :param set_description: description of the set
         """
-        mol_set = MoleculeSet(
-            set_name=set_name,
-            description=set_description)
+        if set_description:
+            mol_set = MoleculeSet(
+                set_name=set_name,
+                description=set_description)
+        else:
+            mol_set = MoleculeSet(
+                set_name=set_name)
+
         mol_set.save()
         self.add_mol_list_to_set(mol_set)
-
 
 
 class FileIterator(MoleculeIterator):

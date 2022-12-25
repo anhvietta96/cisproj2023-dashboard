@@ -40,10 +40,8 @@ class Molecule(models.Model):
 
 
 class MoleculeSet(models.Model):
-    set_id = models.AutoField(
-        primary_key=True)
     set_name = models.CharField(
-        max_length=120, validators=[MinLengthValidator(1)])
+        primary_key=True, max_length=120, validators=[MinLengthValidator(1)])
     description = models.CharField(
         max_length=250, default=None, blank=True, null=True)
     molecules = models.ManyToManyField(Molecule)
@@ -51,11 +49,11 @@ class MoleculeSet(models.Model):
     class Meta:
         ordering = ['set_name']
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if not self.set_name:
-            self.set_name = f"Set {self.set_id}"
-            super().save(update_fields=['set_name'])
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #     if not self.set_name:
+    #         self.set_name = f"Set {self.set_id}"
+    #         super().save(update_fields=['set_name'])
 
     def __str__(self):
         return self.set_name
