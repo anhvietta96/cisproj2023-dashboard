@@ -2,10 +2,11 @@
 Methods for the calculation of molecular properties
 """
 import os.path
-from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, inchi, \
-    Crippen, Draw, rdchem
 from .models import Molecule
 from typing import Optional
+from django.conf import settings
+from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, inchi, \
+    Crippen, Draw, rdchem
 
 
 class MoleculeProperties:
@@ -13,13 +14,14 @@ class MoleculeProperties:
     Class to calculate molecular properties
     """
 
-    def __init__(self, mol: rdchem.Mol, image_dir: Optional[str] = None):
+    def __init__(self, mol: rdchem.Mol, rel_image_dir: Optional[str] = None):
         """
         :param mol: molecule of interest, provided by a supplier
-        :param image_dir: directory in which the gererated image will be saved
+        :param rel_image_dir: relative dir_path (from MEDIA_ROOT) to directory
+            in which the generated image will be saved
         """
         self.mol = mol
-        self.image_dir = image_dir
+        self.rel_image_dir = rel_image_dir
         self.name = None
 
         # primary key
@@ -53,10 +55,12 @@ class MoleculeProperties:
         """
         Draws an image of the molecule and saves it to the given
         image directory.
-        :return: path to the image file if self.image_dir is not None
+        :return: dir_path to the image file if self.rel_image_dir is not None
         """
-        if self.image_dir is not None:
-            image_path = os.path.join(self.image_dir, f"{self.inchi_key}.png")
+        if self.rel_image_dir is not None:
+            image_path = os.path.join(settings.MEDIA_ROOT,
+                                      self.rel_image_dir,
+                                      f"{self.inchi_key}.png")
             Draw.MolToFile(self.mol, image_path)
             return image_path
 
@@ -79,10 +83,10 @@ class MoleculeProperties:
 
     def save_molecule(self) -> Molecule:
         """
-        Saves molecular properties
+        Saves molecular properties into the DB
         :return: Instance of saved Molecule
         """
-        image_path = self.draw_image() if self.image_dir is not None else None
+        image_path = self.draw_image()
 
         m = Molecule(
             inchi_key=self.inchi_key,

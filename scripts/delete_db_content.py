@@ -1,7 +1,7 @@
 from compounds.models import Molecule, MoleculeSet
 
 
-def run(*args) -> None:
+def run(*args: str) -> None:
     """
     Deletes all Molecule and MoleculeSet instances in the DB
     :param args: list of arguments

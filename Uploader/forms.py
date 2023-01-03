@@ -21,7 +21,7 @@ class SDFileMult(forms.Form):
     description = forms.CharField(max_length=250, required=False)
     documents = forms.FileField(
         widget=forms.ClearableFileInput(attrs={'multiple': True}),
-        validators=[FileExtensionValidator(allowed_extensions=['sdf', 'smi'])])
+        validators=[FileExtensionValidator(allowed_extensions=['sdf'])])
 
     def clean(self):
         cleaned_data = super().clean()

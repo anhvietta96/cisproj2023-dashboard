@@ -1,17 +1,19 @@
 import os.path
 from compounds.file_handler import MoleculeIterator
-from compounds.models import MoleculeSet
+from django.forms import Form
+
 
 class RequestFileIterator(MoleculeIterator):
     """
     Class for the iteration over all files uploaded by the user
     """
 
-    def __init__(self, dirname, files, form):
+    def __init__(self, dirname: str, files, form: Form):
         """
-        :param dirname: path to the directory of the files
+        :param dirname: dir_path to the directory of the uploaded files
         :param files: uploaded files from the user
-        :param form: form provided by django
+        :type files: HttpRequest.FILES
+        :param form: validated upload form
         """
         if not os.path.exists(dirname):
             os.makedirs(dirname)
@@ -23,7 +25,7 @@ class RequestFileIterator(MoleculeIterator):
         self.set_name = self.form['set_name'].value()
         self.set_description = self.form['description'].value()
 
-        # Front-End
+        # For Front-End communication
         self.data = {
             'form': self.form,
             'existing_uploads': {
@@ -31,7 +33,7 @@ class RequestFileIterator(MoleculeIterator):
                 'data': []}
         }
 
-    def iterate_over_files(self):
+    def iterate_over_files(self) -> None:
         """
         Function for the iteration over all uploaded files by the user.
         Molecules will be saved in the Molecule model
@@ -51,13 +53,14 @@ class RequestFileIterator(MoleculeIterator):
     def get_data_dict(self) -> dict:
         """
         Return the data dictionary for front-end communication
-        :return: data dictionary
+        :return: data dictionary containing information about the form,
+            uploaded files and errors
         """
         self.data['err_msg'] = "\n".join(self.err_msgs)
         return self.data
 
-    def add_to_new_set_from_form(self):
+    def add_to_set_from_form(self) -> None:
         """
-        Adds to the molecules to the set from the given form
+        Adds the molecules to the set from the given form
         """
-        super().add_to_new_set(self.set_name, self.set_description)
+        super().add_to_set(self.set_name, self.set_description)
