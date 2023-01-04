@@ -54,7 +54,6 @@
         .container {
           margin: auto;
           max-width: 1200px;
-          min-height: 50vh;
           overflow: scroll;
           width: 100%;
         }
@@ -72,6 +71,7 @@
         thead tr {
           border-bottom: 4px solid white;
           border-top: 4px solid white;
+          border-right: 4px solid white;
           height: 1px;
 
         }
@@ -84,11 +84,10 @@
         border-left: 4px solid white;
         border-right: 4px solid white;
         font-color: black;
-
-          font-weight: bold;
-          height: inherit;
-          padding: 20px;
-          white-space: nowrap;
+        font-weight: bold;
+        height: inherit;
+        padding: 20px;
+        white-space: nowrap;
 
         }
 
@@ -114,6 +113,7 @@
 
         tbody tr {
           border-bottom: 4px solid white;
+          border-right: 4px solid white;
 
 
         }
@@ -121,36 +121,47 @@
         td {
           padding: 0.5rem 1rem;
           text-align: left;
-          background-color: #eff5f5;
+          background-color: #95A5A612;
           border-bottom: 4px solid white;
           border-left: 4px solid white;
           border-right: 4px solid white;
 
         }
 
-         .container tr:hover {
-            background-color: white;
-            -webkit-box-shadow: 0 6px 6px -6px #0E1119;
-            -moz-box-shadow: 0 6px 6px -6px #0E1119;
-            box-shadow: 0 6px 6px -6px #0E1119;
+            tr.setheader{
+            padding: 0.5rem 1rem;
+              text-align: left;
+              border-bottom: 4px solid white;
+              border-left: 4px solid white;
+              border-right: 4px solid white;
+            }
+            #setid{
+            background-color: #aebcbdbd;
             }
 
-        .container td:hover {
-          background-color: #e0ebeb;
-          color: #403E10;
-          font-weight: bold;
+             .container tr:hover {
+                background-color: white;
+                -webkit-box-shadow: 0 6px 6px -6px #0E1119;
+                -moz-box-shadow: 0 6px 6px -6px #0E1119;
+                box-shadow: 0 6px 6px -6px #0E1119;
+                }
 
-          /*box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;*/
-          transform: translate3d(6px, -6px, 0);
+            .container td:hover {
+              background-color: #e0ebeb;
+              color: #403E10;
+              font-weight: bold;
+
+              /*box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;*/
+              transform: translate3d(6px, -6px, 0);
 
 
-          transition-delay: 0s;
+            transition-delay: 0s;
               transition-duration: 0.4s;
               transition-property: all;
-          transition-timing-function: line;
-        }
-        .container tr:nth-child(even) {background-color: #f2f2f2;}
-         /* The Modal (background) */
+            transition-timing-function: line;
+            }
+            .container tr:nth-child(even) {background-color: #f2f2f2;}
+            /* The Modal (background) */
             .modal {
               display: none; /* Hidden by default */
               position: fixed; /* Stay in place */
@@ -170,8 +181,8 @@
               margin: 20% auto; /* 20% from the top and centered */
               padding: 20px;
               border: 1px solid #888;
-              width: 60%; /* Could be more or less, depending on screen size */
-              font-size: 30px;
+              width: 35%; /* Could be more or less, depending on screen size */
+
             }
 
             /* The Close Button */
@@ -188,6 +199,8 @@
             text-decoration: none;
             cursor: pointer;
             }
+
+
     </style>
 
     <div class="main-title">
@@ -210,10 +223,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <tr class="clickable">
-                            <td colspan=8>Setname</td>
-                        </tr>
-                 {% for mol in molecules %}
+                {% for set in sets %}
+                    <tr class="setheader" >
+                        <td colspan="10" id="setid">{{set.set_name}}</td>
+                    </tr>
+                        {% for mol in set.molecules.all %}
+
                     <tr>
                         <td>
                             {% if mol.image %}
@@ -230,6 +245,7 @@
                         <td>{{mol.num_rings}}</td>
                     </tr>
                   {% endfor %}
+                {% endfor %}
                 </tbody>
                 </table>
 
@@ -249,7 +265,48 @@
                   <!-- Modal content -->
                   <div class="modal-content">
                     <span class="close">&times;</span>
-                    <p>Filter options</p>
+                    <p>
+                        <div class="main-title">
+                            <p class="font-weight-bold">FILTER OPTIONS</p>
+                        </div>
+                        <div class="main-cards">
+                             <form target="_self" method="post" autocomplete="on">
+                                 <fieldset>
+                                <legend> <label for="row">Choose a row:</label></legend>
+                                 <select id="chooserow" >
+                                     <option value="1"> Formula</option>
+                                      <option>logP</option>
+                                      <option>Weight</option>
+                                      <option>H-acceptors</option>
+                                      <option>H-donors</option>
+                                      <option>Rotatable bonds</option>
+                                      <option>Rings</option>
+
+                                 </select>
+                                 </fieldset>
+                                <fieldset id="f1">
+                                 <legend>Select range:</legend>
+
+                                  <label for="low">min-value:</label><br>
+                                  <input type="text" id="low" name="low" ><br>
+
+                                  <label for="upper">max-value:</label><br>
+                                  <input type="text" id="upper" name="upper"><br><br>
+                                </fieldset>
+                                    <p>or:</p>
+                                 <fieldset id ="f2">
+                                 <legend>Search pattern in row:</legend>
+
+                                  <input type="text" id="attr" name="attr" ><br>
+
+
+                                </fieldset>
+                                  <input type="submit" value="Submit">
+
+                             </form>
+
+                        </div>
+                    </p>
                   </div>
                 </div>
             </div>
@@ -280,13 +337,18 @@
             modal.style.display = "none";
           }
         }
+
+
     </script>
     <script type="text/javascript">
 
-
-    $('tr.clickable').click(function() {
-        $(this).siblings().toggle();
+    $(document).ready(function(){
+        $('tr.setheader').nextUntil('tr.setheader').slideToggle(100);
+        $('tr.setheader').click(function(){
+            $(this).find('span').text(function(_, value){return value=='-'?'+':'-'});
+            $(this).nextUntil('tr.setheader').slideToggle(100, function(){
+            });
+        });
     });
-
     </script>
     {% endblock %}
