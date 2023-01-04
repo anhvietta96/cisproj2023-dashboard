@@ -27,7 +27,11 @@ class Molecule(models.Model):
         default=None, blank=True, null=True, max_length=255,
         upload_to='images/')
 
-    def num_satisfied_lipinski_rules(self):
+    def num_satisfied_Lipinski_rules(self) -> int:
+        """
+        Returns how many rules of Lipinski's rule of five are fulfilled
+        :return: number of satisfied rules
+        """
         lipinskis_ro5 = (self.molecular_weight < 500,
                          self.num_h_acceptors <= 10,
                          self.num_h_donors <= 5,

@@ -12,7 +12,7 @@ def delete_dir_content(dir_path: str) -> None:
     try:
         shutil.rmtree(dir_path)
     except FileNotFoundError:
-        print(f"Folder {dir_path} does not exists!", file=sys.stderr)
+        print(f"Folder {dir_path} does not exist!", file=sys.stderr)
     os.mkdir(dir_path)
 
 

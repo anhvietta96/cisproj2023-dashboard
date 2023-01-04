@@ -1,9 +1,9 @@
 """
-Methods for the calculation of molecular properties
+Methods to calculate molecular properties and draw molecule images
 """
 import os.path
 from .models import Molecule
-from typing import Optional
+from typing import Optional, Iterable
 from django.conf import settings
 from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, inchi, \
     Crippen, Draw, rdchem
@@ -11,7 +11,7 @@ from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, inchi, \
 
 class MoleculeProperties:
     """
-    Class to calculate molecular properties
+    Class to calculate molecular properties and draw molecule images
     """
 
     def __init__(self, mol: rdchem.Mol, rel_image_dir: Optional[str] = None):
@@ -38,7 +38,7 @@ class MoleculeProperties:
         self.num_rings = rdMolDescriptors.CalcNumRings(self.mol)
         self.rotatable_bonds = Lipinski.NumRotatableBonds(self.mol)
 
-    def search_for_name(self, name_list) -> Optional[str]:
+    def search_for_name(self, name_list: Iterable[str]) -> Optional[str]:
         """
         Searches for the name of the molecule in name_list and initializes
         self.name
@@ -48,8 +48,11 @@ class MoleculeProperties:
         """
         for name_prop in name_list:
             if self.mol.HasProp(name_prop):
-                self.name = self.mol.GetProp(name_prop)
-                return self.name
+                name = self.mol.GetProp(name_prop)
+
+                if name and name != 'None':
+                    self.name = name
+                    return self.name
 
     def draw_image(self) -> Optional[str]:
         """

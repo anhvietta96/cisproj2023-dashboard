@@ -199,7 +199,8 @@
                 <thead>
                   <tr>
                       <th></th>
-                      <th><h3>InchiKey</h3></h3></th>
+                      <th><h3>InchiKey</h3></th>
+                      <th><h3>Name</h3></th>
                       <th><h3>logP</h3></th>
                       <th><h3>Formula</h3></th>
                       <th><h3>Weight</h3></th>
@@ -223,6 +224,7 @@
                             {% endif %}
                             </td>
                             <td>{{mol.inchi_key}}</td>
+                            <td>{{mol.name}}</td>
                             <td>{{mol.log_p}}</td>
                             <td>{{mol.molecular_formula}}</td>
                             <td>{{mol.molecular_weight}}</td>

@@ -17,7 +17,8 @@ class SDFileForm(forms.ModelForm):
 # Multiple file upload, must write resolution for name conflicts
 class SDFileMult(forms.Form):
     set_name = forms.CharField(max_length=120)
-    set_already_exists = forms.BooleanField(required=False)
+    set_exists = forms.BooleanField(
+        required=False, label="Set was already created")
     description = forms.CharField(max_length=250, required=False)
     documents = forms.FileField(
         widget=forms.ClearableFileInput(attrs={'multiple': True}),
@@ -25,16 +26,20 @@ class SDFileMult(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        already_exists = cleaned_data["set_already_exists"]
-        set_name = cleaned_data["set_name"]
+        set_exists = cleaned_data["set_exists"]
+        set_name = cleaned_data.get("set_name")
+
+        if not set_name:
+            raise forms.ValidationError(
+                "Set name must not consist exclusively of spaces")
 
         mol_set_query = MoleculeSet.objects.filter(set_name=set_name)
         if mol_set_query:
-            if already_exists is False:
+            if set_exists is False:
                 raise forms.ValidationError(
                     f"A set with the name {set_name} already exists!")
         else:
-            if already_exists is True:
+            if set_exists is True:
                 raise forms.ValidationError(
                     f"A set with the name {set_name} does not exist!")
 
