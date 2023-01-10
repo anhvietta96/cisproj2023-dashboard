@@ -1,12 +1,12 @@
-import os.path
 from django.db import models
 from django.core.validators import MinLengthValidator, MinValueValidator
-from dashboard.settings import MEDIA_ROOT
 
 
 class Molecule(models.Model):
     inchi_key = models.CharField(
         primary_key=True, max_length=27, validators=[MinLengthValidator(27)])
+    name = models.TextField(
+        default=None, blank=True, null=True)
 
     log_p = models.FloatField(
         default=None, blank=True, null=True)
@@ -25,9 +25,13 @@ class Molecule(models.Model):
         default=None, blank=True, null=True)
     image = models.ImageField(
         default=None, blank=True, null=True, max_length=255,
-        upload_to=os.path.join(MEDIA_ROOT, 'images/'))
+        upload_to='images/')
 
-    def num_satisfied_lipinski_rules(self):
+    def num_satisfied_Lipinski_rules(self) -> int:
+        """
+        Returns how many rules of Lipinski's rule of five are fulfilled
+        :return: number of satisfied rules
+        """
         lipinskis_ro5 = (self.molecular_weight < 500,
                          self.num_h_acceptors <= 10,
                          self.num_h_donors <= 5,
@@ -40,10 +44,8 @@ class Molecule(models.Model):
 
 
 class MoleculeSet(models.Model):
-    set_id = models.AutoField(
-        primary_key=True)
     set_name = models.CharField(
-        max_length=120, validators=[MinLengthValidator(1)])
+        primary_key=True, max_length=120, validators=[MinLengthValidator(1)])
     description = models.CharField(
         max_length=250, default=None, blank=True, null=True)
     molecules = models.ManyToManyField(Molecule)
@@ -51,11 +53,11 @@ class MoleculeSet(models.Model):
     class Meta:
         ordering = ['set_name']
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if not self.set_name:
-            self.set_name = f"Set {self.set_id}"
-            super().save(update_fields=['set_name'])
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #     if not self.set_name:
+    #         self.set_name = f"Set {self.set_id}"
+    #         super().save(update_fields=['set_name'])
 
     def __str__(self):
         return self.set_name

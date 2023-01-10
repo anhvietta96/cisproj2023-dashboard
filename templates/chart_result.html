@@ -4,13 +4,20 @@
         <div class="chart">
             <div class="charts-card">
                 <p class="chart-title">{{title}}</p>
-                <div style="width:1050px;height:600px;">
-                    <canvas id="dynamic-chart"></canvas>
+                <div>
+                    <canvas id="dynamic-chart" style="width:1300px;height:800px"></canvas>
                 </div>
                 
                 {% load static %}
                 <script src="{% static 'js/chart.js'%}" defer></script>
                 {{options|json_script}}
             </div>
+            <div class="charts-card">Filters
+                <button id="apply-filter">Apply</button>
+                <div id="filters">
+                    <button id="add-filter">Add Filter</button>
+                </div>
+            </div>
         </div>
+        <script src="https://cdn.rawgit.com/adriancooney/console.image/c9e6d4fd/console.image.min.js"></script>
     {% endblock %}

@@ -47,7 +47,8 @@ def SDFMultView(request: HttpRequest):
                 form)
             request_file_iterator.iterate_over_files()
             data = request_file_iterator.get_data_dict()
-            request_file_iterator.add_to_new_set()
+            request_file_iterator.add_to_set_from_form()
         else:
+            data['form'] = form
             data['err_msg'] = 'Not a valid SDFile'
     return render(request, 'Uploader/upload.html', data)

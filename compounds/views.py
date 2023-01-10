@@ -1,15 +1,15 @@
 from django.shortcuts import render
 from django.views.generic import ListView
 from .serializers import MoleculeSerializer
-from .models import Molecule
+from .models import Molecule, MoleculeSet
 from rest_framework import viewsets
 from django.http import HttpRequest
 from django.core.exceptions import ObjectDoesNotExist
 
+
 def main_compound_view(request: HttpRequest):
-    molecules = Molecule.objects.all()
-    return render(request, 'compounds/compounds.html',
-                  {'molecules': molecules})
+    sets = MoleculeSet.objects.all()
+    return render(request, 'compounds/compounds.html', {'sets': sets})
 
 
 class CompoundViewSet(viewsets.ModelViewSet):
@@ -24,7 +24,8 @@ def molecule_single_view(request: HttpRequest, inchi_key: str):
     except ObjectDoesNotExist:
         return render(request, 'compounds/compounds.html')
 
-    return render(request, 'compounds/compounds.html', {'molecules': [molecule]})
+    return render(request, 'compounds/compounds.html',
+                  {'molecules': [molecule]})
 
 
 class SearchResultsView(ListView):
@@ -43,10 +44,18 @@ def search_results(request):
     search_results = []
     properties = Molecule.__dict__["__doc__"]
     property_list = properties[9:].replace(',', '').replace(')', '').split()
+    
     for mol in q:
         value_list = []
         for property in property_list:
-            value_list.append(getattr(mol, property))
+            if property != 'image':
+                value_list.append(getattr(mol, property))
+            else:
+                value_list.append(mol.image.url)
         search_results.append(value_list)
-    data = {'header':property_list,'table': search_results}
+    
+    property_list.remove('image')
+    property_list = ['image'] + property_list
+
+    data = {'header': property_list, 'table': search_results}
     return render(request, 'search.html', data)
