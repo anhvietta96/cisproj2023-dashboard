@@ -211,8 +211,9 @@
                 <table class="container">
                 <thead>
                   <tr>
-                      <th></th>
-                      <th><h3>InchiKey</h3></h3></th>
+                      <th><h3>Image</h3></th>
+                      <th><h3>InchiKey</h3></th>
+                      <th><h3>Name</h3></th>
                       <th><h3>logP</h3></th>
                       <th><h3>Formula</h3></th>
                       <th><h3>Weight</h3></th>
@@ -227,15 +228,16 @@
                     <tr class="setheader" >
                         <td colspan="10" id="setid">{{set.set_name}}</td>
                     </tr>
-                        {% for mol in set.molecules.all %}
 
+                    {% for mol in set.molecules.all %}
                     <tr>
                         <td>
-                            {% if mol.image %}
+                        {% if mol.image %}
                             <img src="{{mol.image.url}}" width="130" height="130" />
-                            {% endif %}
+                        {% endif %}
                         </td>
                         <td>{{mol.inchi_key}}</td>
+                        <td>{{mol.name}}</td>
                         <td>{{mol.log_p}}</td>
                         <td>{{mol.molecular_formula}}</td>
                         <td>{{mol.molecular_weight}}</td>
@@ -244,7 +246,7 @@
                         <td>{{mol.num_rotatable_bonds}}</td>
                         <td>{{mol.num_rings}}</td>
                     </tr>
-                  {% endfor %}
+                    {% endfor %}
                 {% endfor %}
                 </tbody>
                 </table>

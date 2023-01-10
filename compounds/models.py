@@ -23,6 +23,7 @@ class Molecule(models.Model):
         default=None, blank=True, null=True)
     num_rings = models.PositiveSmallIntegerField(
         default=None, blank=True, null=True)
+
     image = models.ImageField(
         default=None, blank=True, null=True, max_length=255,
         upload_to='images/')
@@ -40,7 +41,7 @@ class Molecule(models.Model):
         return sum(lipinskis_ro5)
 
     def __str__(self):
-        return f"inchi_key={self.inchi_key}"
+        return self.inchi_key
 
 
 class MoleculeSet(models.Model):
@@ -52,12 +53,6 @@ class MoleculeSet(models.Model):
 
     class Meta:
         ordering = ['set_name']
-
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #     if not self.set_name:
-    #         self.set_name = f"Set {self.set_id}"
-    #         super().save(update_fields=['set_name'])
 
     def __str__(self):
         return self.set_name

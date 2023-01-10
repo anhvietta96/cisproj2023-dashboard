@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Molecule, MoleculeSet
 
-# Register your models here.
+admin.site.register(Molecule)
+admin.site.register(MoleculeSet)
