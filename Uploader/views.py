@@ -46,6 +46,7 @@ def SDFMultView(request: HttpRequest):
                 os.path.join(settings.MEDIA_ROOT, 'uploaded_data/'),
                 request.FILES.getlist('documents'),
                 form)
+            
             request_file_iterator.iterate_over_files()
             data = request_file_iterator.get_data_dict()
             request_file_iterator.add_to_set_from_form()

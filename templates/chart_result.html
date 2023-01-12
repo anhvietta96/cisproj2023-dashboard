@@ -4,9 +4,8 @@
         <div class="chart">
             <div class="charts-card">
                 <p class="chart-title">{{title}}</p>
-                <div>
-                    <canvas id="dynamic-chart" style="width:1300px;height:800px"></canvas>
-                </div>
+                <div id="dynamic-chart" style="width:110%;height:600%"></div>
+                <!--<canvas id="dynamic-chart" style="width:90%;height:90%"></canvas>-->
                 
                 {% load static %}
                 <script src="{% static 'js/chart.js'%}" defer></script>
@@ -19,5 +18,4 @@
                 </div>
             </div>
         </div>
-        <script src="https://cdn.rawgit.com/adriancooney/console.image/c9e6d4fd/console.image.min.js"></script>
     {% endblock %}

@@ -5,6 +5,9 @@ from compounds.models import Molecule,MoleculeSet
 from .forms import PropertyForm'''
 import json
 
+num_property_list = Molecule.objects.get_num_attr()
+display_num_property_list = [property.replace('_',' ').title() for property in num_property_list]
+
 class Chart:
     pass
 
@@ -12,9 +15,7 @@ class Chart:
 def ChartOptions(request):
     data = {}
     
-    properties = Molecule.__dict__["__doc__"]
-    property_list = properties[9:].replace(',','').replace(')','').split()
-    data['property_list']=property_list
+    data['property_list']=display_num_property_list
 
     all_set = MoleculeSet.objects.all()
     set_list=[str(set) for set in all_set]
@@ -47,12 +48,12 @@ def ChartResult(request):
     result = {'title':'Created Chart','options':ChartOptions}
     return render(request,'chart_result.html',result)
 '''
+
 def ChartResult(request):
     ChartOptions = {'legend':[],'name':[],'data':[],'image':[]}
     media_url = 'media/image'
 
-    properties = Molecule.__dict__["__doc__"]
-    property_list = properties[9:].replace(',','').replace(')','').split()
+    property_list = Molecule.objects.get_all_attr()
 
     post = request.POST
 
@@ -63,24 +64,24 @@ def ChartResult(request):
     set_list=[str(set) for set in all_set]
     
     post_dict = post.dict()
-    queried_sets = []
-    
 
+    set_name_list = []
     for key in post_dict.keys():
         if key.startswith('set_'):
             data = []
             set_num = int(key.split('_')[1])
             set = all_set[set_num]
+            set_name_list.append(set.set_name)
             ChartOptions['legend'].append(set_list[set_num])
             ChartOptions['name'].append(set_list[set_num])
             q = set.molecules.all()
             img_list = []
             for mol in q:
                 mol_inf = []
-                mol_inf.append(getattr(mol,property_list[x_axis]))
-                mol_inf.append(getattr(mol,property_list[y_axis]))
+                mol_inf.append(getattr(mol,num_property_list[x_axis]))
+                mol_inf.append(getattr(mol,num_property_list[y_axis]))
                 for property in property_list:
-                    if property != property_list[x_axis] and property != property_list[y_axis] and property != 'image':
+                    if property != num_property_list[x_axis] and property != num_property_list[y_axis] and property not in ['image']:
                         mol_inf.append(getattr(mol,property))
                     if property == 'image':
                         img_list.append(mol.image.url)
@@ -88,10 +89,13 @@ def ChartResult(request):
             ChartOptions['data'].append(data)
             ChartOptions['image'].append(img_list)
 
-    ChartOptions['header']=[property_list[x_axis],property_list[y_axis]]
+    ChartOptions['header']=[num_property_list[x_axis],num_property_list[y_axis]]
     for property in property_list:
-        if property != property_list[x_axis] and property != property_list[y_axis] and property != 'image':
+        if property != num_property_list[x_axis] and property != num_property_list[y_axis] and property not in ['image']:
             ChartOptions['header'].append(property)
+    ChartOptions['header']=[header.replace('_',' ').title() for header in ChartOptions['header']]
     
-    result = {'title':property_list[x_axis]+"/"+property_list[y_axis],'options':ChartOptions}
+    title = display_num_property_list[x_axis]+"/"+display_num_property_list[y_axis]+" Chart for Group "+", ".join(set_name_list)
+
+    result = {'title':title,'options':ChartOptions}
     return render(request,'chart_result.html',result)

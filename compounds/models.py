@@ -1,8 +1,34 @@
 from django.db import models
 from django.core.validators import MinLengthValidator, MinValueValidator
 
+class MoleculeManager(models.Manager):
+    def get_all_attr(self):
+        all_attr_list = []
+        for field in self.model._meta.get_fields():
+            if 'Field' in str(type(self.model._meta.get_field(field.name))):
+                all_attr_list.append(field.name)
+        return all_attr_list
+
+    def get_num_attr(self):
+        num_attr_list = ['Integer','Float']
+        num_field = []
+        all_field_name = [field.name for field in self.model._meta.get_fields()]
+        for field_name in all_field_name:
+            for attr in num_attr_list:
+                if attr in str(type(self.model._meta.get_field(field_name))):
+                    num_field.append(field_name)
+        return num_field
+
+    def get_str_attr(self):
+        num_attr = self.get_num_attr()
+        all_field_name = [field.name for field in self.model._meta.get_fields()]
+        return [attr for attr in all_field_name and attr not in num_attr]
+
 
 class Molecule(models.Model):
+    objects = MoleculeManager()
+
+
     inchi_key = models.CharField(
         primary_key=True, max_length=27, validators=[MinLengthValidator(27)])
     name = models.TextField(

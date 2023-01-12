@@ -65,6 +65,14 @@ function get_new_max_vals(data)
   xy_min_max[2] = Math.min.apply(null,y_values);
   xy_min_max[3] = Math.max.apply(null,y_values);
 
+  x_dist = (xy_min_max[1] - xy_min_max[0])/5;
+  y_dist = (xy_min_max[3] - xy_min_max[2])/2.5;
+
+  xy_min_max[0] = xy_min_max[0]-x_dist;
+  xy_min_max[1] = xy_min_max[1]+x_dist;
+  xy_min_max[2] = xy_min_max[2]-y_dist;
+  xy_min_max[3] = xy_min_max[3]+y_dist;
+
   return xy_min_max;
 }
 
@@ -75,7 +83,7 @@ var option;
 
 var chartDom = document.getElementById('dynamic-chart');
 if(chartDom) {
-  Chart = echarts.init(chartDom,null,{width:1300, height:800});
+  Chart = echarts.init(chartDom,null);
   ChartOptions = JSON.parse(document.currentScript.nextElementSibling.textContent);
   var tooltip_col = ChartOptions['header'];
   var chart_data = ChartOptions['data'];
@@ -102,7 +110,7 @@ if(chartDom) {
 
   var series_val = [];
   var series = null;
-  var rich_text = `{"Attr":{"width": 60,"align":"left","padding":[0,10,0,10]},"Val":{"width": 90,"align":"right","padding":[0,10,0,10]},`;
+  var rich_text = `{"Attr":{"width": 40,"align":"left"},"Val":{"width": 60,"align":"right"},`;
   var image_container = null;
   var inchikey = null;
   for(let i = 0;i<chart_data.length;i++)
@@ -114,36 +122,35 @@ if(chartDom) {
       image_container.push(null);
       image_container[j]=new Image();
       image_container[j].src=image_url_collection[j];
-      inchikey = chart_data[i][j][2];
-      rich_text += `"Image-${inchikey}":{"height":50,"backgroundColor":{"image":"null"}},`
+      inchikey = chart_data[i][j][2].replace(/-/g,'');
+      rich_text += `"${inchikey}":{"height":150,"backgroundColor":{"image":"null"}},`
     }
     rich_text = rich_text.slice(0,-1) + '}';
     rich_text = JSON.parse(rich_text);
     for(let j = 0;j<image_url_collection.length;j++)
     {
-      inchikey = chart_data[i][j][2];
-      rich_text[`Image-${inchikey}`]["backgroundColor"]["image"]=image_container[j];
+      inchikey = chart_data[i][j][2].replace(/-/g,'');
+      rich_text[`${inchikey}`]["backgroundColor"]["image"]=image_container[j];
     }
-    console.log(rich_text);
     
 
     series = {
       name: ChartOptions['name'][i],
       data: chart_data[i],
       type: 'scatter',
-      symbolSize: 10,
+      symbolSize: 15,
       emphasis: {
         focus: 'self',
         label: {
           show: true,
           formatter: function (param) {
-            return_list = [`{Image-${param.data[2]}|}`]
+            inchikey = param.data[2].replace(/-/g,'');
+            return_list = [`{${inchikey}|}`];
             for(let i = 0; i < tooltip_col.length; i++)
             {
               return_list.push(`{Attr|${tooltip_col[i]}}{Val|${param.data[i]}}`);
             }
-            var rtext = return_list.join('\n')
-            console.log(rtext);
+            var rtext = return_list.join('\n');
             return rtext;
           },
           position: 'top',
@@ -170,16 +177,12 @@ if(chartDom) {
       top: '3%',
       data: ChartOptions['legend'],
     },
-    grid: {
-      left: '10%',
-      right: '10%',
-      top: 0,
-      bottom: 0
-      },xAxis: {
-      min: xy_min_max[0]-0.1,
-      max: 1.1*xy_min_max[1],
+    xAxis: {
+      type:'value',
+      min: xy_min_max[0],
+      max: xy_min_max[1],
       name: ChartOptions['header'][0],
-      nameLocation: 'end',
+      nameLocation: 'start',
       nameTextStyle:{
         fontWeight:'bold',
         fontSize: 12,
@@ -187,8 +190,9 @@ if(chartDom) {
 
     },},
     yAxis: {
-      min: xy_min_max[2]-0.1,
-      max: 1.2*xy_min_max[3],
+      type:'value',
+      min: xy_min_max[2],
+      max: xy_min_max[3],
       name: ChartOptions['header'][1],
       nameLocation: 'middle',
       nameTextStyle:{
@@ -314,11 +318,15 @@ $(document).ready(function(){
       option['series'][i]['data'] = curr_data[i];
     }
     var xy_min_max = get_new_max_vals(curr_data);
-    option['xAxis']['min'] = xy_min_max[0]-0.1;
+    option['xAxis']['min'] = xy_min_max[0];
     option['xAxis']['max'] = xy_min_max[1]*1.1;
-    option['yAxis']['min'] = xy_min_max[2]-0.1;
+    option['yAxis']['min'] = xy_min_max[2];
     option['yAxis']['max'] = xy_min_max[3]*1.2;
     option && Chart.setOption(option);
     return;
   });
 });
+
+window.onresize = function() {
+  Chart.resize();
+};
