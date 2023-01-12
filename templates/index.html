@@ -65,7 +65,7 @@
                     <center>
                     <p> Despite being able to describe abstract models well, SDF data might not be the easiest to understand and visualise.
                     <br>Our tool processes your SDF files and represents them in a way that the human eye can understand. </p>
-                <!-- button that redirects to uoload page -->
+                <!-- button that redirects to upload page -->
                 <a href="/upload">
                     <button class="button button1">Get Started</button>
                     </a>
@@ -74,10 +74,12 @@
                 <br> <br>
                 <h3>Here are some ways in which we can represent your data:</h3>
                 <div class="chart">
-                    <!--<div class="float-child1">-->
+                    <div class="float-child1">
                     <div class="charts-card">
                         <p class="chart-title">Line Chart</p>
                         <div id="area-chart"></div>
+                        </div>
+                        </div>
                         <!--
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.min.js"></script>
                         <script>
@@ -105,14 +107,15 @@
                         </div>
                         -->
                     <!--</div>-->
+                    <div class="float-child2">
                     <div class="charts-card">
                         <p class="chart-title">Scatter Plot</p>
                         <div>
-                            <canvas id="scatter-chart" width="650" height="450"></canvas>
+                            <canvas id="scatter-chart" width="300" height="315"></canvas>
                         </div>
                     </div>
                     </div>
-                    <div class="float-child2">
+                    
                     <!--
                     <div class="charts-card">
                         <p class="chart-title">Scatter Plot</p>
@@ -120,5 +123,5 @@
                     </div>
                     </div>
                     -->
-                </div>
+            
     {% endblock %}
