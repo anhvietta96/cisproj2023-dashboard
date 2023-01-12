@@ -24,6 +24,12 @@ class MoleculeManager(models.Manager):
         all_field_name = [field.name for field in self.model._meta.get_fields()]
         return [attr for attr in all_field_name and attr not in num_attr]
 
+    def get_all_export_attr(self):
+        fields_to_remove = ['image']
+        all_field = self.get_all_attr()
+        for field in fields_to_remove:
+            all_field.remove(field)
+        return all_field
 
 class Molecule(models.Model):
     objects = MoleculeManager()

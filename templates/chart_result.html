@@ -17,5 +17,16 @@
                     <button id="add-filter">Add Filter</button>
                 </div>
             </div>
+            <div class="charts-card">Export
+                <div>
+                    <button id="export-png">As PNG</button>
+                    <form method="post" action="{% url 'csv_download' %}">
+                        {% csrf_token %}
+                        <input id="export-csv-val" name="export-csv-val" type="hidden"></input>
+                        <button id="export-csv" type="submit">As CSV</button>
+                    </form>
+                    <button id="export-sdf">As SDF</button>
+                </div>
+            </div>
         </div>
     {% endblock %}

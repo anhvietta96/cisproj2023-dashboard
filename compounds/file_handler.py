@@ -89,11 +89,10 @@ class MoleculeIterator:
                 if not mol:
                     self._err_msg("Cannot parse molecule")
                     continue
-
                 mol_props_instance = MoleculeProperties(mol, self.image_dir)
                 mol_props_instance.search_for_name(self.molname_search_list)
                 mol_instance = mol_props_instance.save_molecule()
-
+                
                 if self.save_model_list:
                     self.mol_list.append(mol_instance)
         return True

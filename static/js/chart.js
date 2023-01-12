@@ -14,7 +14,6 @@ function numerical_filter(data,pos,lower_bound,upper_bound)
   var filtered_data = [];
   for(const i of Object.keys(data))
   {
-    /*data[i] = data[i].filter(function(subarray){return subarray[pos] > lower_bound && subarray[pos] < upper_bound})*/
     var sub_arr = [];
     for(let j = 0;j<data[i].length;j++)
     {
@@ -46,6 +45,20 @@ function lexicographic_filter(data,pos,substring)
   return filtered_data;
 }
 
+function get_selected_inchikey(option)
+{
+  var inchikey_array = [];
+  for(const group of Object.keys(option['series']))
+  {
+    console.log(group);
+    for(let i = 0; i < option['series'][group]['data'].length; i++)
+    {
+      inchikey_array.push(option['series'][group]['data'][i][2]);
+    }
+  }
+  return inchikey_array;
+}
+
 function get_new_max_vals(data)
 {
   var xy_min_max = [null,null,null,null];
@@ -60,10 +73,12 @@ function get_new_max_vals(data)
     y_col = data[i].map(function(value,index){return value[1];});
     y_values.push.apply(y_values,y_col);
   }
-  xy_min_max[0] = Math.min.apply(null,x_values);
-  xy_min_max[1] = Math.max.apply(null,x_values);
-  xy_min_max[2] = Math.min.apply(null,y_values);
-  xy_min_max[3] = Math.max.apply(null,y_values);
+  xy_min_max[0] = Math.round(Math.min.apply(null,x_values));
+  xy_min_max[1] = Math.round(Math.max.apply(null,x_values));
+  xy_min_max[2] = Math.round(Math.min.apply(null,y_values));
+  xy_min_max[3] = Math.round(Math.max.apply(null,y_values));
+
+  console.log(xy_min_max);
 
   x_dist = (xy_min_max[1] - xy_min_max[0])/5;
   y_dist = (xy_min_max[3] - xy_min_max[2])/2.5;
@@ -88,24 +103,6 @@ if(chartDom) {
   var tooltip_col = ChartOptions['header'];
   var chart_data = ChartOptions['data'];
 
-  /*
-  var x_values = [];
-  var y_values = [];
-  var x_col = [];
-  var y_col = []
-  for(let i = 0; i < chart_data.length;i++)
-  {
-    x_col = chart_data[i].map(function(value,index){return value[0];});
-    x_values.push.apply(x_values,x_col);
-    y_col = chart_data[i].map(function(value,index){return value[1];});
-    y_values.push.apply(y_values,y_col);
-  }
-  
-  var x_min = Math.min.apply(null,x_values);
-  var x_max = Math.max.apply(null,x_values);
-  var y_min = Math.min.apply(null,y_values);
-  var y_max = Math.max.apply(null,y_values);
-  */
   var xy_min_max = get_new_max_vals(chart_data);
 
   var series_val = [];
@@ -186,9 +183,8 @@ if(chartDom) {
       nameTextStyle:{
         fontWeight:'bold',
         fontSize: 12,
-        borderType: 'solid',
-
-    },},
+        borderType: 'solid',},
+      nameGap:30,},
     yAxis: {
       type:'value',
       min: xy_min_max[2],
@@ -198,10 +194,15 @@ if(chartDom) {
       nameTextStyle:{
         fontWeight:'bold',
         fontSize: 12,
-        borderType: 'solid',},},
+        borderType: 'solid',},
+      nameGap:50},
     series: series_val,
   };
   option && Chart.setOption(option);
+
+  var csv_input = document.getElementById('export-csv-val');
+  csv_input.value = JSON.stringify(get_selected_inchikey(option));
+  console.log(csv_input.value);
 }
 
 $(document).ready(function(){
@@ -319,11 +320,26 @@ $(document).ready(function(){
     }
     var xy_min_max = get_new_max_vals(curr_data);
     option['xAxis']['min'] = xy_min_max[0];
-    option['xAxis']['max'] = xy_min_max[1]*1.1;
+    option['xAxis']['max'] = xy_min_max[1];
     option['yAxis']['min'] = xy_min_max[2];
-    option['yAxis']['max'] = xy_min_max[3]*1.2;
+    option['yAxis']['max'] = xy_min_max[3];
     option && Chart.setOption(option);
+
+    var csv_input = document.getElementById('export-csv-val');
+    csv_input.value = JSON.stringify(get_selected_inchikey(option));
     return;
+  });
+  $('#export-png').click(function(){
+    var canvas_collection = document.getElementsByTagName('canvas');
+    var dataURL = canvas_collection[0].toDataURL("image/png");
+    var newTab = window.open('about:blank','image from canvas');
+    newTab.document.write("<img src='"+dataURL+"' alt='from canvas'/>");
+  });
+  $('#export-sdf').click(function(){
+    var canvas_collection = document.getElementsByTagName('canvas');
+    var dataURL = canvas_collection[0].toDataURL("image/png");
+    var newTab = window.open('about:blank','image from canvas');
+    newTab.document.write("<img src='"+dataURL+"' alt='from canvas'/>");
   });
 });
 

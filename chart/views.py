@@ -4,6 +4,9 @@ from compounds.models import Molecule,MoleculeSet
 '''from .models import PropertyChoice
 from .forms import PropertyForm'''
 import json
+from django.http import HttpResponse
+from dashboard.settings import MEDIA_ROOT
+import os
 
 num_property_list = Molecule.objects.get_num_attr()
 display_num_property_list = [property.replace('_',' ').title() for property in num_property_list]
@@ -51,7 +54,6 @@ def ChartResult(request):
 
 def ChartResult(request):
     ChartOptions = {'legend':[],'name':[],'data':[],'image':[]}
-    media_url = 'media/image'
 
     property_list = Molecule.objects.get_all_attr()
 
@@ -99,3 +101,34 @@ def ChartResult(request):
 
     result = {'title':title,'options':ChartOptions}
     return render(request,'chart_result.html',result)
+
+def Export_CSV(request):
+    inchikey_collection = json.loads(request.POST['export-csv-val'])
+
+    filename = 'exported_csv_{}.csv'.format(request.POST['csrfmiddlewaretoken'])
+    
+    property_list = Molecule.objects.get_all_export_attr()
+    data_to_write = ['\t'.join(property_list)+'\n']
+    for inchikey in inchikey_collection:
+        data_string = ""
+        mol = Molecule.objects.filter(inchi_key__exact=inchikey)
+        for property in property_list:
+            data_string += str(getattr(mol[0],property))
+            data_string += '\t'
+        data_string = data_string[:-1] + '\n'
+        data_to_write.append(data_string)
+    print(data_to_write)
+    filepath = os.path.join(MEDIA_ROOT,'exported_data/csv/',filename)
+    file = open(filepath,'w+')
+    file.writelines(data_to_write)
+    file.close()
+    with open(filepath,'r') as f:
+        file_data = f.read()
+
+    response = HttpResponse(file_data,content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
+
+    return response
+
+def Export_SDF(request):
+    return
