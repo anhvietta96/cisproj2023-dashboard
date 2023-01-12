@@ -273,6 +273,7 @@
                         </div>
                         <div class="main-cards">
                              <form target="_self" method="post" autocomplete="on">
+                                 {% csrf_token %}
                                  <fieldset>
                                 <legend> <label for="row">Choose an attribute:</label></legend>
                                  <select id="chooserow" >
