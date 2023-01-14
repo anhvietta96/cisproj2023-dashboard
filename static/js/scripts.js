@@ -14,271 +14,173 @@ function closeSidebar() {
         sidebar.classList.remove("sidebar-responsive");
         sidebarOpen = false;
 }
-//Chartjs, nonfunctional
-/*
-const ctx = document.getElementById('#area-chart');
 
-new Chart(ctx, {
-  type: 'bar',
-  data:{
-    labels:['Red','Blue','Yellow','Green','Purple','Orange'],
-    datasets:[{label:'# of Votes',
-              data:[12.19,3,5,2,3],
-            borderWidth: 1}]},
-  options:{
-    scales: {
-      y:{
-        beginAtZero:true
-      }
-    }
-  }
-});
-*/
-
-//C3js, functional
-var chart = c3.generate({
-  bindto: '#area-chart',
-  data: {
-    columns: [
-      ['data1', 30, 200, 100, 400, 150, 250],
-      ['data2', 50, 20, 10, 40, 15, 25]
-    ]
-  }
-});
-
-//Echarts
-// const img = new Image(15,15);
-// img.src = '/data/test.png';
-// console.log(img.src);
-
-// const img_2 = new Image(15,15);
-// img_2.src = '90790.png';
-
-var chartDom = document.getElementById('scatter-chart');
-var myChart = echarts.init(chartDom);
-var option;
-
-const data = [
-  [
-    [28604, 77, 17096869, 'Value 1', 1990],
-    [31163, 77.4, 27662440, 'Value 2', 1990],
-    [1516, 68, 1154605773, 'Value 3', 1990],
-    [13670, 74.7, 10582082, 'Value 4', 1990],
-    [28599, 75, 4986705, 'Value 5', 1990],
-    [29476, 77.1, 56943299, 'Value 6', 1990],
-    [31476, 75.4, 78958237, 'Value 7', 1990],
-    [28666, 78.1, 254830, 'Value 8', 1990],
-    [1777, 57.7, 870601776, 'Value 9', 1990],
-    [29550, 79.1, 122249285, 'Value 10', 1990]
-  ],
-  [
-    [44056, 81.8, 23968973, 'Value 1', 2015],
-    [43294, 81.7, 35939927, 'Value 2', 2015],
-    [13334, 76.9, 1376048943, 'Value 3', 2015],
-    [21291, 78.5, 11389562, 'Value 4', 2015],
-    [38923, 80.8, 5503457, 'Value 5', 2015],
-    [37599, 81.9, 64395345, 'Value 6', 2015],
-    [44053, 81.1, 80688545, 'Value 7', 2015],
-    [42182, 82.8, 329425, 'Value 8', 2015],
-    [5903, 66.8, 1311050527, 'Value 9', 2015],
-    [36162, 83.5, 126573481, 'Value 10', 2015]
-  ]
-];
-
-option = {
-  title: {
-    left: '0%',
-    top: '0%'
-  },
+var histogramDom = document.getElementById('histogram');
+var histogram = echarts.init(histogramDom,null);
+var histogramOption = {
   legend: {
+    data: ['Drugs'],
     right: '10%',
     top: '3%',
-    data: ['1990', '2015'],
-    fontSize: 25,
-  },
-  grid: {
-  left: '10%',
-  right: '10%',
-  top: 0,
-  bottom: 0
-  },
-  xAxis: {
-    splitLine: {
-      lineStyle: {
-        type: 'dashed'
-      }
-    }
-  },
-  yAxis: {
-    splitLine: {
-      lineStyle: {
-        type: 'dashed'
-      }
-    },
-    scale: true
   },
   series: [
     {
-      name: '1990',
-      data: data[0],
-      type: 'scatter',
-      symbolSize: function (data) {
-        return Math.sqrt(data[2]) / 5e2;
-      },
-      emphasis: {
-        focus: 'self',
+      barGap: '0%',
+      data: [
+        [-1.775,0],
+        [-1.325,0],
+        [-0.875,3],
+        [-0.425,2],
+        [0.025,0],
+        [0.475,0],
+        [0.925,4],
+        [1.375,3],
+        [1.825,2],
+        [2.275,1],
+        [3.175,2],
+        [3.625,3],
+        [4.075,2],
+        [4.525,1],
+        [4.975,2],
+        [5.425,0],
+        [5.875,1],
+        [6.325,1],
+        [6.775,0],
+      ],
+      emphasis:{
+        focus:'self',
         label: {
-          show: true,
-          formatter: function (param) {
-            if(param.data[0] < 2000){
-              string = '1';
-            }
-            else{
-              string = '0';
-            }
-            return [`{Image_${string}|}`,`${param.data[0]}\n${param.data[1]}\n${param.data[2]}\n${param.data[3]}`].join('\n');
-          },
-          position: 'top',
-          color: '#000',
-          backgroundColor: '#fff',
-          fontWeight: 'bold',
-          padding: [3,4],
-          width: 150,
-          height: 100,
+          show:true,
+          color:'black',
+          offset: [0,-100],
           fontSize: 15,
-          align: 'center',
-          verticalAlign: 'bottom',
-/*          rich:{
-            Image_0:{
-                height:50,
-                backgroundColor:{
-                    image: img
-                }
-              },
-            Image_1:{
-                height:50,
-                backgroundColor:{
-                  image: img_2
-                }
-            }
-          } */
+          backgroundColor: 'white',
+          borderColor: 'black',
+          borderWidth: 2,
+          borderType: 'solid',
+          padding:5,
+          formatter: function(param){
+            return `${param.data[0]},${param.data[1]}`;
+          }
         }
       },
-      itemStyle: {
-        shadowBlur: 10,
-        shadowColor: 'rgba(120, 36, 50, 0.5)',
-        shadowOffsetY: 5,
-        color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [
-          {
-            offset: 0,
-            color: 'rgb(251, 118, 123)'
-          },
-          {
-            offset: 1,
-            color: 'rgb(204, 46, 72)'
-          }
-        ])
-      }
-    },
-    {
-      name: '2015',
-      data: data[1],
-      type: 'scatter',
-      symbolSize: function (data) {
-        return Math.sqrt(data[2]) / 5e2;
-      },
-      emphasis: {
-        focus: 'self',
-        label: {
-          show: true,
-          formatter: function (param) {
-            return param.data[3];
-          },
-          position: 'top',
-        }
-      },
-      itemStyle: {
-        shadowBlur: 10,
-        shadowColor: 'rgba(25, 100, 150, 0.5)',
-        shadowOffsetY: 5,
-        color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [
-          {
-            offset: 0,
-            color: 'rgb(129, 227, 238)'
-          },
-          {
-            offset: 1,
-            color: 'rgb(25, 183, 207)'
-          }
-        ])
-      }
+      type: 'bar',
     }
-  ]
+  ],
+  xAxis: {
+    type:'value',
+    min: -2.5,
+    max: 8.5,
+    name: 'Attribute',
+    nameLocation: 'start',
+    nameTextStyle:{
+      fontWeight:'bold',
+      fontSize: 12,
+      borderType: 'solid',},
+    nameGap:30,},
+  yAxis: {
+    type:'value',
+    min: 0,
+    max: 5,
+    name: 'Count',
+    nameLocation: 'middle',
+    nameTextStyle:{
+      fontWeight:'bold',
+      fontSize: 12,
+      borderType: 'solid',},
+    nameGap:50},
+};
+
+histogramOption && histogram.setOption(histogramOption);
+console.log(histogramOption);
+
+var chartDom = document.getElementById('scatter-chart');
+var myChart = echarts.init(chartDom,null);
+var option = {
+  legend: {
+    data: ['Drugs'],
+    right: '10%',
+    top: '3%',
+  },
+  series: [
+    {
+      data: [
+        [1.6109, 474.587], 
+        [1.1981, 285.343],
+        [1.0482, 315.369],
+        [1.3101, 180.159],
+        [2.3753, 547.674],
+        [5.7358, 314.469],
+        [-0.7976, 324.341],
+        [3.1869, 378.108],
+        [-0.3513, 297.745],
+        [4.1686, 277.411],
+        [1.09718, 499.534],
+        [4.4256, 375.871],
+        [0.76592, 311.363],
+        [3.809, 412.946],
+        [0.9744, 312.391],
+        [3.7357, 853.918],
+        [1.5657, 193.246],
+        [1.6344, 449.385],
+        [4.8106, 319.88],
+        [3.81298, 324.3993],
+        [6.3136, 558.65],
+        [-1.0397, 180.167],
+        [3.9624, 311.469],
+        [-0.4636, 366.084],
+        [2.65458, 425.754],
+        [3.1482, 388.895],
+        [4.8944, 318.873],
+      ],
+      emphasis:{
+        focus:'self',
+        label: {
+          show:true,
+          color:'black',
+          offset: [0,-100],
+          fontSize: 15,
+          backgroundColor: 'white',
+          borderColor: 'black',
+          borderWidth: 2,
+          borderType: 'solid',
+          padding:5,
+          formatter: function(param){
+            return `${param.data[0]},${param.data[1]}`;
+          }
+        }
+      },
+      symbolSize: 15,
+      type: 'scatter',
+    }
+  ],
+  xAxis: {
+    type:'value',
+    min: -3,
+    max: 8,
+    name: 'Attribute 1',
+    nameLocation: 'start',
+    nameTextStyle:{
+      fontWeight:'bold',
+      fontSize: 12,
+      borderType: 'solid',},
+    nameGap:30,},
+  yAxis: {
+    type:'value',
+    min: -89,
+    max: 1123,
+    name: 'Attribute 2',
+    nameLocation: 'middle',
+    nameTextStyle:{
+      fontWeight:'bold',
+      fontSize: 12,
+      borderType: 'solid',},
+    nameGap:50},
 };
 
 option && myChart.setOption(option);
 
-//ApexCharts, functional
-/*
-var ScatterOptions = {
-    series: [{
-    name: "SAMPLE A",
-    data: [
-    [16.4, 5.4], [21.7, 2],  [19, 2], [10.9, 1], [13.6, 3.2], [10.9, 7.4], [10.9, 8.2], [16.4, 0], [16.4, 1.8], [13.6, 0.3], [13.6, 0], [29.9, 0], [27.1, 2.3], [16.4, 0], [13.6, 3.7], [10.9, 5.2], [16.4, 6.5], [10.9, 0], [24.5, 7.1], [10.9, 0], [8.1, 4.7], [19, 0], [21.7, 1.8], [27.1, 0], [24.5, 0], [27.1, 0], [29.9, 1.5], [27.1, 0.8], [22.1, 2]]
-  },{
-    name: "SAMPLE B",
-    data: [
-    [36.4, 13.4], [1.7, 11], [5.4, 8], [9, 17], [1.9, 4], [3.6, 12.2], [1.9, 14.4], [1.9, 9], [1.9, 13.2], [1.4, 7], [6.4, 8.8], [3.6, 4.3], [1.6, 10], [9.9, 2], [7.1, 15], [1.4, 0], [3.6, 13.7], [1.9, 15.2], [6.4, 16.5], [0.9, 10], [4.5, 17.1], [10.9, 10], [0.1, 14.7], [9, 10], [12.7, 11.8], [2.1, 10], [2.5, 10], [27.1, 10], [2.9, 11.5], [7.1, 10.8], [2.1, 12]]
-  },{
-    name: "SAMPLE C",
-    data: [
-    [21.7, 3], [23.6, 3.5], [24.6, 3], [29.9, 3], [21.7, 20], [28, 4], [27.1, 0.3], [16.4, 4], [13.6, 0], [19, 5], [22.4, 3], [24.5, 3], [32.6, 3], [27.1, 4], [29.6, 6], [31.6, 8], [21.6, 5], [20.9, 4], [22.4, 0], [32.6, 10.3], [29.7, 20.8], [24.5, 0.8], [21.4, 0], [21.7, 6.9], [28.6, 7.7], [15.4, 0], [18.1, 0], [33.4, 0], [16.4, 0]]
-  }],
-    chart: {
-    height: 350,
-    type: 'scatter',
-    zoom: {
-      enabled: true,
-      type: 'xy'
-    }
-  },
-  xaxis: {
-    tickAmount: 10,
-    labels: {
-      formatter: function(val) {
-        return parseFloat(val).toFixed(1)
-      }
-    }
-  },
-  yaxis: {
-    tickAmount: 7
-  }
-  };
-
-var chart = new ApexCharts(document.querySelector("#scatter-chart"), ScatterOptions);
-chart.render();
-*/
-/*
-var ChartOptions = JSON.parse(document.getElementById('chart-options').textContent);
-var chart = new ApexCharts(document.querySelector("#dynamic-chart"),ChartOptions);
-chart.render()
-
-
-$(document).ready(function(){
-  $('#searchQueryForm').submit(function(evt){
-    evt.preventDefault();
-    data = {'search_str':$(this).find('input').val()};
-    console.log($('#searchQueryForm').serialize());
-    url = "{% url 'Search_Result' %}"
-    $.ajax({
-      method:'GET',
-      url: 'search/',
-      data: data,
-      success: function(response){
-        render(response);
-      }
-    });
-
-  });
-
-});*/
+window.onresize = function() {
+  myChart.resize();
+  histogram.resize();
+};

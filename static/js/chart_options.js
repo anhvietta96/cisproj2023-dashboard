@@ -1,8 +1,10 @@
-var set_data = JSON.parse(document.currentScript.nextElementSibling.textContent);
+var parsed_data = JSON.parse(document.currentScript.nextElementSibling.textContent);
 
 $(document).ready(function(){
     var num_set = 0;
-    var available_set = []
+    var available_set = [];
+    const set_data = parsed_data['set_list'];
+    const property_list = parsed_data['property_list'];
     $('#add-set').click(function(){
       var available_slot = null;
       for(let i = 1; i <= num_set+1;i++)
@@ -60,4 +62,38 @@ $(document).ready(function(){
       available_set=new_arr;
       return;
     });
+    $('#chart-choice').on('change','select',function(){
+      var select_value = document.getElementById('chart-type').value;
+      var y_axis = document.getElementById('y-div');
+      if((select_value==1 || select_value==2) && !y_axis)
+      {
+          var axis_choice = document.getElementById('axis-choice');
+          var y_div_node = document.createElement('div');
+          y_div_node.id = 'y-div';
+          y_div_node.classList.add('property-selector');
+          var y_div_text = document.createTextNode('Y-axis ');
+          y_div_node.appendChild(y_div_text);
+          var y_select_node = document.createElement('select');
+          y_select_node.name = 'y-axis';
+          y_select_node.id = 'y-axis';
+          var y_option_array = [];
+          for(let i = 1; i <= property_list.length; i++)
+          {
+            y_option_array.push(null);
+            y_option_array[i-1] = document.createElement('option');
+            y_option_array[i-1].value = i; 
+            var y_text_node = document.createTextNode(`${property_list[i-1]}`);
+            y_option_array[i-1].append(y_text_node);
+            y_select_node.appendChild(y_option_array[i-1]);
+          }
+          y_div_node.appendChild(y_select_node);
+          axis_choice.appendChild(y_div_node);
+          return;
+      }
+      if(select_value==3 && y_axis)
+      {
+          y_axis.remove();
+          return;
+      }
   });
+});

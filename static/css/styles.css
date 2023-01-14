@@ -188,10 +188,17 @@ body {
 a.chart-button {
   appearance: button;
   text-decoration: none;
-
 }
 
+label.customize-chart-label {
+  display: inline-block;
+  width:300px;
+  text-align: left;
+}
 
+button.chart-right-button {
+  float: right;
+}
 
 /* ---------- SCROLLBARS ---------- */
   

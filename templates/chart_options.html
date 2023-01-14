@@ -27,33 +27,42 @@
         </style>
         <form method="post" action="{% url 'chart_result' %}">
             {% csrf_token %}
-            <div class='main-header'>
-                Select Properties
-                <div class="property-selector">X-axis</div>
-                <select name="x-axis" id="x-axis">
-                    {% for property in property_list %}
-                        <option value="{{forloop.counter}}">{{property}}</option>
+            <div class='main-header' id='chart-choice'>
+                Chart Type
+                <select name="chart-type" id="chart-type">
+                    {% for type in data.chart_types %}
+                        <option value="{{forloop.counter}}">{{type}}</option>
                     {% endfor %}
                 </select>
-                <div class="property-selector">Y-axis</div>
-                <select name="y-axis" id="y-axis">
-                    {% for property in property_list %}
-                        <option value="{{forloop.counter}}">{{property}}</option>
-                    {% endfor %}
-                </select>
+                <div id='axis-choice'>
+                    Select Properties
+                    <div class="property-selector" id='x-div'>X-axis
+                    <select name="x-axis" id="x-axis">
+                        {% for property in data.property_list %}
+                            <option value="{{forloop.counter}}">{{property}}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                    <div class="property-selector" id='y-div'>Y-axis
+                    <select name="y-axis" id="y-axis">
+                        {% for property in data.property_list %}
+                            <option value="{{forloop.counter}}">{{property}}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                </div>
             </div>
             <div id="set-selector">Select Sets<br>
                 <select name="set_0" id="set_0">
-                    {% for set in set_list %}
+                    {% for set in data.set_list %}
                         <option value="{{forloop.counter}}">{{set}}</option>
                     {% endfor %}
                 </select>
                 <button id="add-set" type="button">Add Set</button>
             </div>
-            <button class="buttonn buttonn1">Plot</button>
-            <button class="material-icons-outlined" type='submit'>search</button>
+            <button class="buttonn buttonn1" type="submit">Plot</button>
         </form>
         {% load static %}
         <script src="{% static 'js/chart_options.js'%}" defer></script>
-        {{set_list|json_script}}
+        {{data|json_script}}
     {% endblock %}

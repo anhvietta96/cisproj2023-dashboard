@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
     {% block main %}
-        <div class="chart">
+        <div class="chart" id='main-div'>
             <div class="charts-card">
                 <p class="chart-title">{{title}}</p>
                 <div id="dynamic-chart" style="width:110%;height:600%"></div>
@@ -12,12 +12,36 @@
                 {{options|json_script}}
             </div>
             <div class="charts-card">Filters
-                <button id="apply-filter">Apply</button>
+                <button id="apply-filter" class="chart-right-button">Apply</button>
                 <div id="filters">
                     <button id="add-filter">Add Filter</button>
                 </div>
             </div>
-            <div class="charts-card">Export
+            <div class="charts-card">Customize Chart
+                <button id='apply-customization' class="chart-right-button">Apply</button>
+                <div id="customize-options">
+                    {% if options.type == 3 %}
+                        <label class='customize-chart-label'>Number of bins: </label><input type='text' id='bin-num'></input>
+                    {% elif options.type == 1 or options.type == 2 %}
+                        <label class='customize-chart-label'>Extra dimension in bubble chart: </label><select align="center" id='new-param-choice'>
+                            <option value='-1'>None</option> 
+                            {% for header in options.header %}
+                                {% if forloop.counter in options.lexicographic_position %}
+                                {% else %}
+                                    <option value={{forloop.counter}}>{{header}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                    <br>
+                    <label class='customize-chart-label'>Minimum value of X-axis: </label><input type='text' id='new-min-x'></input>
+                    <label class='customize-chart-label'>Maximum value of X-axis: </label><input type='text' id='new-max-x'></input>
+                    <br>
+                    <label class='customize-chart-label'>Minimum value of Y-axis: </label><input type='text' id='new-min-y'></input>
+                    <label class='customize-chart-label'>Maximum value of Y-axis: </label><input type='text' id='new-max-y'></input>
+                </div>
+            </div>
+            <div class="charts-card" id='export-div'>Export
                 <div>
                     <button id="export-png">As PNG</button>
                     <form method="post" action="{% url 'csv_download' %}">
