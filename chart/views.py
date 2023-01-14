@@ -61,7 +61,6 @@ def ChartResult(request):
     property_list = Molecule.objects.get_all_attr()
 
     post = request.POST
-    print(post)
     chart_type = int(post.get('chart-type')[0])
 
     all_set = MoleculeSet.objects.all()
@@ -164,7 +163,6 @@ def Export_CSV(request):
             data_string += '\t'
         data_string = data_string[:-1] + '\n'
         data_to_write.append(data_string)
-    print(data_to_write)
     filepath = os.path.join(MEDIA_ROOT,'exported_data/csv/',filename)
     file = open(filepath,'w+')
     file.writelines(data_to_write)

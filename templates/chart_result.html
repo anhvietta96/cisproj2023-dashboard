@@ -23,10 +23,11 @@
                     {% if options.type == 3 %}
                         <label class='customize-chart-label'>Number of bins: </label><input type='text' id='bin-num'></input>
                     {% elif options.type == 1 or options.type == 2 %}
+                    {% load tags %}
                         <label class='customize-chart-label'>Extra dimension in bubble chart: </label><select align="center" id='new-param-choice'>
                             <option value='-1'>None</option> 
                             {% for header in options.header %}
-                                {% if forloop.counter in options.lexicographic_position %}
+                                {% if forloop.counter|decrement in options.lexicographic_position %}
                                 {% else %}
                                     <option value={{forloop.counter}}>{{header}}</option>
                                 {% endif %}
