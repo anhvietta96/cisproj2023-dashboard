@@ -1,5 +1,5 @@
 """
-File handling classes and functions for SDF files
+File handling classes for SDF files
 """
 import os.path
 import sys
@@ -10,68 +10,38 @@ from django.conf import settings
 from typing import Optional
 
 
-def insert_into_new_set(dirname: str, set_name: str) -> None:
-    """
-    Adds the compounds from dirname into the DB and links them to a new
-    MoleculeSet with name set_name
-    :param dirname: name of the directory which includes SDF files
-    :param set_name: name of the new MoleculeSet
-    """
-    file_iterator = FileIterator(dirname)
-    file_iterator.iterate_over_files()
-
-    mol_set = MoleculeSet(set_name=set_name)
-    mol_set.save()
-
-    mol_set.molecules.add(*file_iterator.get_mol_list())
-    mol_set.save()
-
-
-def insert_into_existing_set(dirname: str, set_name: str) -> None:
-    """
-    Adds the compounds from dirname into the DB and links them to an already
-    existing MoleculeSet with id set_id
-    :param dirname: name of the directory which includes SDF files
-    :param set_name: name of the new MoleculeSet
-    """
-    file_iterator = FileIterator(dirname)
-    file_iterator.iterate_over_files()
-
-    mol_set_query = MoleculeSet.objects.filter(set_name=set_name)
-    if mol_set_query:
-        mol_set = mol_set_query[0]
-    else:
-        print("No such MoleculeSet!", file=sys.stderr)
-        raise ValueError
-
-    mol_set.molecules.add(*file_iterator.get_mol_list())
-    mol_set.save()
-
-
 class MoleculeIterator:
     """
     Base class for the iteration over all molecules in an SDF file
     """
 
     def __init__(self,
-                 image_dir: str = os.path.join(settings.MEDIA_ROOT, 'images'),
+                 rel_image_dir: str = 'images',
                  save_model_list: bool = True):
         """
-        :param image_dir: dir_path to the directory, in which the images
-            will be saved
+        :param rel_image_dir: dir_path to the directory, in which
+            the images will be saved (relative to MEDIA_ROOT)
         :param save_model_list: if True, Molecule instances will be saved and
             can later be added to the set
         """
 
         self.save_model_list = save_model_list
-        self.image_dir = image_dir
+        self.image_dir = rel_image_dir
         self.molname_search_list = (
-            'PUBCHEM_IUPAC_NAME', 'chembl_pref_name', 'GENERIC_NAME', "_Name")
+            'IUPAC_NAME',  # ChEBI
+            'PUBCHEM_IUPAC_NAME',  # PUBCHEM
+            'chembl_pref_name',  # CHEMBL
+            'JCHEM_IUPAC',  # Drugbank
+        )
         self.mol_list = []
         self.err_msgs = []
 
-        if not os.path.isdir(self.image_dir):
-            os.makedirs(self.image_dir)
+        # will be later set to True if not all molecules can be parsed
+        self._err_flag = False
+
+        abs_img_dir = os.path.join(settings.MEDIA_ROOT, self.image_dir)
+        if not os.path.isdir(abs_img_dir):
+            os.makedirs(abs_img_dir)
 
     def iterate_over_molecules(self, file_path: str) -> bool:
         """
@@ -80,24 +50,31 @@ class MoleculeIterator:
         :param file_path: dir_path to an SDF file
         :return: True if the file is valid, else False
         """
-        supplier = self.__get_supplier(file_path)
+        supplier = self.get_supplier(file_path)
         if supplier is None:
             return False
 
         with supplier(file_path) as suppl:
             for mol in suppl:
                 if not mol:
-                    self._err_msg("Cannot parse molecule")
+                    self._add_parse_err_msg()
                     continue
-                mol_props_instance = MoleculeProperties(mol, self.image_dir)
+
+                try:
+                    mol_props_instance = MoleculeProperties(mol, self.image_dir)
+                except ValueError:
+                    self._add_parse_err_msg()
+                    continue
+
                 mol_props_instance.search_for_name(self.molname_search_list)
                 mol_instance = mol_props_instance.save_molecule()
-                
+
                 if self.save_model_list:
                     self.mol_list.append(mol_instance)
+
         return True
 
-    def __get_supplier(self, file_path: str):
+    def get_supplier(self, file_path: str):
         """
         Validates file exists and has a valid extension and returns a matching
         Supplier
@@ -137,6 +114,15 @@ class MoleculeIterator:
         """
         self.err_msgs.append(err_msg)
         print(err_msg, file=sys.stderr)
+
+    def _add_parse_err_msg(self):
+        """
+        Adds an error message to the list of error messages when the function
+        is called the first time, stating that not all molecules could be parsed
+        """
+        if self._err_flag is False:
+            self._err_flag = True
+            self._err_msg("Not all molecules could parsed correctly")
 
     def add_mol_list_to_set(self, molecule_set: MoleculeSet) -> None:
         """

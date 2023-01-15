@@ -18,12 +18,13 @@ def delete_dir_content(dir_path: str) -> None:
 
 def run(*args: str) -> None:
     """
-    Deletes (recursively) the content of MEDIA_ROOT/uploaded_data/
+    Deletes (recursively) the content of MEDIA_ROOT
+    Deletes the content of MEDIA_ROOT/uploaded_data/
     :param args: list of arguments:
-                 all: delete the content of MEDIA_ROOT instead
+                 sdf: delete the content of MEDIA_ROOT/uploaded_data/ instead
     """
-    if 'all' in args:
-        delete_dir_content(MEDIA_ROOT)
-    else:
+    if "sdf" in args:
         path = os.path.join(MEDIA_ROOT, 'uploaded_data/')
         delete_dir_content(path)
+    else:
+        delete_dir_content(MEDIA_ROOT)

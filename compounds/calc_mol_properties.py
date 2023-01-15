@@ -16,24 +16,27 @@ class MoleculeProperties:
 
     def __init__(self, mol: rdchem.Mol, rel_image_dir: Optional[str] = None):
         """
-        :param mol: molecule of interest, provided by a supplier
+        :param mol: molecule of interest, provided by Chem.SDMolSupplier
         :param rel_image_dir: relative dir_path (from MEDIA_ROOT) to directory
             in which the generated image will be saved
+        :raise ValueError if the calculated InchiKey is invalid
         """
+        # primary key
+        self.inchi_key = inchi.MolToInchiKey(mol)
+        if not self.inchi_key:
+            raise ValueError("InchiKey is not valid")
+
         self.mol = mol
         self.rel_image_dir = rel_image_dir
-        self.name = None
 
-        # primary key
-        self.inchi_key = inchi.MolToInchiKey(self.mol)
-
-        # properties for Lipinksi's rule of five
+        # properties for Lipinski's rule of five
         self.log_p = round(Crippen.MolLogP(self.mol), 6)
         self.molecular_weight = round(Descriptors.MolWt(self.mol), 4)
         self.num_h_acceptors = Lipinski.NumHAcceptors(self.mol)
         self.num_h_donors = Lipinski.NumHDonors(self.mol)
 
         # additional properties
+        self.name = None
         self.molecular_formula = rdMolDescriptors.CalcMolFormula(self.mol)
         self.num_rings = rdMolDescriptors.CalcNumRings(self.mol)
         self.rotatable_bonds = Lipinski.NumRotatableBonds(self.mol)
@@ -54,18 +57,18 @@ class MoleculeProperties:
                     self.name = name
                     return self.name
 
-    def draw_image(self) -> Optional[str]:
+    def draw_image(self, img_type: str = "svg") -> Optional[str]:
         """
         Draws an image of the molecule and saves it to the given
         image directory.
         :return: dir_path to the image file if self.rel_image_dir is not None
         """
         if self.rel_image_dir is not None:
-            image_path = os.path.join(settings.MEDIA_ROOT,
-                                      self.rel_image_dir,
-                                      f"{self.inchi_key}.png")
-            Draw.MolToFile(self.mol, image_path)
-            return image_path
+            rel_image_path = os.path.join(self.rel_image_dir,
+                                          f"{self.inchi_key}.{img_type}")
+            image_path = os.path.join(settings.MEDIA_ROOT, rel_image_path)
+            Draw.MolToFile(self.mol, image_path, imageType=img_type)
+            return rel_image_path
 
     def return_dict(self) -> dict:
         """
@@ -89,7 +92,7 @@ class MoleculeProperties:
         Saves molecular properties into the DB
         :return: Instance of saved Molecule
         """
-        image_path = self.draw_image()
+        rel_image_path = self.draw_image("svg")
 
         m = Molecule(
             inchi_key=self.inchi_key,
@@ -101,7 +104,7 @@ class MoleculeProperties:
             num_h_donors=self.num_h_donors,
             num_rings=self.num_rings,
             num_rotatable_bonds=self.rotatable_bonds,
-            image=image_path
+            image=rel_image_path
         )
         m.save()
         return m
