@@ -276,7 +276,7 @@
                                  {% csrf_token %}
                                  <fieldset>
                                 <legend> <label for="row">Choose an attribute:</label></legend>
-                                 <select id="chooserow" >
+                                 <select id="attr" name="attr">
                                      <option value="1"> Formula</option>
                                       <option>logP</option>
                                       <option>Weight</option>
@@ -290,8 +290,8 @@
                                 <fieldset id="f1">
                                  <legend>Select range:</legend>
 
-                                  <label for="low">min-value:</label><br>
-                                  <input type="text" id="low" name="low" ><br>
+                                  <label for="lower">min-value:</label><br>
+                                  <input type="text" id="lower" name="lower" ><br>
 
                                   <label for="upper">max-value:</label><br>
                                   <input type="text" id="upper" name="upper"><br><br>
@@ -300,7 +300,7 @@
                                  <fieldset id ="f2">
                                  <legend>Search pattern:</legend>
 
-                                  <input type="text" id="attr" name="attr" ><br>
+                                  <input type="text" id="pattern" name="pattern" ><br>
 
 
                                 </fieldset>

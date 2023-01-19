@@ -46,7 +46,8 @@ class moleculeClass():
         :rtype: float 
         """
         for mol in self.suppl:
-            if mol is None: continue #test molecule before using it#
+            if mol is None:
+                continue #test molecule before using it#
             list=mol.GetNumAtoms()
         return list
 

@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView
+
+import compounds.filters
 from .serializers import MoleculeSerializer
 from .models import Molecule, MoleculeSet
 from rest_framework import viewsets
@@ -36,6 +38,24 @@ class SearchResultsView(ListView):
         query = self.request.GET.get("search_query")
         search_result = Molecule.objects.filter(inchi_key__icontains=query)
         return search_result
+
+
+#this view still causes an error: CSRF verification failed. Request aborted.
+#names passed in the variable attr aren't exacly the names of our Modelattributes, so a converting function still needs to
+#be written. Plus filtering by the query that isnt empty-> type(empty field) == None?
+class FilterResultView(ListView):
+    model = Molecule
+    template_name = 'compounds.html'
+    def get_queryset(self):
+        lower = self.request.GET.get("lower")
+        upper = self.request.GET.get("upper")
+        pattern = self.request.GET.get("pattern")
+        attr = self.request.GET.get("attr")
+
+        filter_query = [lower,upper]
+        filter_result = compounds.filters.filter_molecules("molecular_weight", filter_query)
+        return filter_result
+
 
 
 def search_results(request):
