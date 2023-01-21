@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinLengthValidator, MinValueValidator
 
+
 class MoleculeManager(models.Manager):
     def get_all_attr(self):
         all_attr_list = []
@@ -10,7 +11,7 @@ class MoleculeManager(models.Manager):
         return all_attr_list
 
     def get_num_attr(self):
-        num_attr_list = ['Integer','Float']
+        num_attr_list = ['Integer', 'Float']
         num_field = []
         all_field_name = [field.name for field in self.model._meta.get_fields()]
         for field_name in all_field_name:
@@ -35,9 +36,9 @@ class MoleculeManager(models.Manager):
             all_field.remove(field)
         return all_field
 
+
 class Molecule(models.Model):
     objects = MoleculeManager()
-
 
     inchi_key = models.CharField(
         primary_key=True, max_length=27, validators=[MinLengthValidator(27)])

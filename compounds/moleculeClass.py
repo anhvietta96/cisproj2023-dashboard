@@ -3,8 +3,6 @@ from rdkit.Chem import AllChem
 from rdkit import Chem
 from rdkit.Chem import Draw
 import glob
-from rdkit.Chem import PandasTools
-import pandas as pd
 import os
 from rdkit import RDConfig
 

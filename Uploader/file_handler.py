@@ -45,7 +45,7 @@ class RequestFileIterator(MoleculeIterator):
             with open(file_path, 'wb+') as destination:
                 for chunk in file.chunks():
                     destination.write(chunk)
-            if super().iterate_over_molecules(file_path):
+            if self.iterate_over_molecules(file_path):
                 self.data['existing_uploads']['data'].append(
                     [file, self.set_name, self.set_description])
 
