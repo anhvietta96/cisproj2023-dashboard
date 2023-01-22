@@ -364,7 +364,7 @@ function process_histogram_data(data, num_of_bar)
 
 
   let count_arr = [];
-  for(let i = 0; i < data.length; i++)
+  for(const i of Object.keys(data))
   {
     count_arr.push([]);
     for(let j = 0; j < num_of_bar; j++)
@@ -372,7 +372,7 @@ function process_histogram_data(data, num_of_bar)
       count_arr[i].push(0);
     }
   }
-  for(let k = 0; k < data.length; k++)
+  for(const k of Object.keys(data))
   {
     for(let i = 0; i < x_col[k].length; i++)
     {
@@ -387,7 +387,7 @@ function process_histogram_data(data, num_of_bar)
   }
 
   var aggregated_count = [];
-  for(let i = 0; i< data.length; i++)
+  for(const i of Object.keys(data))
   {
     aggregated_count.push.apply(aggregated_count,count_arr[i]);
   }
@@ -395,7 +395,7 @@ function process_histogram_data(data, num_of_bar)
 
 
   let processed_data = [];
-  for(let i = 0; i < data.length; i++)
+  for(const i of Object.keys(data))
   {
     processed_data.push([]);
     for(let j = 0; j < num_of_bar; j++)
@@ -413,7 +413,7 @@ function get_histogram_option(data,legend,tooltip_col,num_of_bar)
 {
   var histogram_data = process_histogram_data(data,num_of_bar);
   var series_val= []
-  for(let i = 0; i < data.length; i++)
+  for(const i of Object.keys(data))
   {
     var series = {
       name: ChartOptions['legend'][i],
