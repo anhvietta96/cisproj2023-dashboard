@@ -44,7 +44,6 @@ function numerical_filter(data,pos,lower_bound,upper_bound)
     }
     filtered_data.push(sub_arr);
   }
-  console.log(filtered_data);
   return filtered_data;
 }
 
@@ -519,7 +518,6 @@ if(chartDom) {
 $(document).ready(function(){
   var num_filter = 0;
   var available_filter = [];
-  var num_custom_filter = 0;
   var available_custom_filter = [];
   var custom_filter_tracker = {};
   $('#add-filter').click(function(){
@@ -822,7 +820,6 @@ $(document).ready(function(){
         option['series'][i]['data'] = curr_data[i];
       }
       var xy_min_max = get_new_max_vals(curr_data);
-      console.log(xy_min_max);
       option['xAxis']['min'] = xy_min_max[0];
       option['xAxis']['max'] = xy_min_max[1];
       option['yAxis']['min'] = xy_min_max[2];

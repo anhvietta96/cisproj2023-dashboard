@@ -32,6 +32,10 @@ $(document).ready(function(){
       button.id='remove_set_'+available_slot;
       button.classList.add('set-btn');
       button.type='button';
+      var close_span = document.createElement('span');
+      close_span.classList.add('material-icons-outlined');
+      close_span.appendChild(document.createTextNode('close'));
+      button.appendChild(close_span);
 
       const element = document.getElementById('set-selector');
       const elem_button = document.getElementById('add-set');
