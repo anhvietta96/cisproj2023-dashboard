@@ -1,3 +1,4 @@
+import dataclasses
 from django.shortcuts import render
 from django.views.generic import ListView
 from .serializers import MoleculeSerializer
@@ -7,9 +8,19 @@ from django.http import HttpRequest
 from django.core.exceptions import ObjectDoesNotExist
 
 
+@dataclasses.dataclass
+class Set:
+    set_name: str
+    mol_list: list
+
+
 def main_compound_view(request: HttpRequest):
-    sets = MoleculeSet.objects.all()
-    return render(request, 'compounds/compounds.html', {'sets': sets})
+    set_list = [Set(mol_set.set_name, mol_set.molecules.all())
+                for mol_set in MoleculeSet.objects.all()]
+    if request.method == 'POST':
+        # Apply filter on molecules here
+        pass
+    return render(request, 'compounds/compounds.html', {'set_list': set_list})
 
 
 class CompoundViewSet(viewsets.ModelViewSet):
@@ -46,7 +57,8 @@ def search_results(request):
 
     property_list.remove('image')
     property_list = ['image'] + property_list
-    display_property_list = [property.replace('_',' ').title() for property in property_list]
+    display_property_list = [property.replace('_', ' ').title() for property in
+                             property_list]
 
     for mol in q:
         value_list = []

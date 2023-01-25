@@ -224,12 +224,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                {% for set in sets %}
+                {% for set in set_list %}
                     <tr class="setheader" >
                         <td colspan="10" id="setid">{{set.set_name}}</td>
                     </tr>
 
-                    {% for mol in set.molecules.all %}
+                    {% for mol in set.mol_list %}
                     <tr>
                         <td>
                         {% if mol.image %}
