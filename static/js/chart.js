@@ -548,6 +548,10 @@ $(document).ready(function(){
     var button = document.createElement('button');
     button.id='remove_'+index;
     button.classList.add('filter-btn');
+    var close_span = document.createElement('span');
+    close_span.classList.add('material-icons-outlined');
+    close_span.appendChild(document.createTextNode('close'));
+    button.appendChild(close_span);
     const element = document.getElementById('filters');
     const elem_button = document.getElementById('add-filter');
     new_div.appendChild(button);
@@ -577,6 +581,10 @@ $(document).ready(function(){
     var button = document.createElement('button');
     button.id = `remove_custom_${index}`;
     button.classList.add('sub-filter-btn');
+    var close_span = document.createElement('span');
+    close_span.classList.add('material-icons-outlined');
+    close_span.appendChild(document.createTextNode('close'));
+    button.appendChild(close_span);
     var main_div_text = document.createTextNode(' Data points must satisfy ');
     var custom_filter_input = document.createElement('input');
     custom_filter_input.id = `custom_filter_input_${index}`;
@@ -628,11 +636,15 @@ $(document).ready(function(){
 
 
     var sub_div = document.createElement('div');
-    sub_div.style.paddingLeft = '15px';
+    sub_div.style.paddingLeft = '30px';
     sub_div.id = `rule_div_${index}_${new_rule_index}`;
     var sub_delete_button = document.createElement('button');
     sub_delete_button.id = `rule_${index}_${new_rule_index}`;
     sub_delete_button.classList.add('sub-delete-btn');
+    var close_span = document.createElement('span');
+    close_span.classList.add('material-icons-outlined');
+    close_span.appendChild(document.createTextNode('close'));
+    sub_delete_button.appendChild(close_span);
     var sub_select = document.createElement('select');
     sub_select.id = `sub_select_${index}_${new_rule_index}`;
     for(const i of Object.keys(tooltip_col))

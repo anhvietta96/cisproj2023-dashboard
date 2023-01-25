@@ -75,6 +75,20 @@ body {
     list-style-type: none;
 }
 
+#sidebar_list li {
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+#sidebar_list li a {
+  margin: 0px;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 20px 10px;
+}
+
 .sidebar-list-item {
     padding: 20px 20px 20px 20px;
 }
