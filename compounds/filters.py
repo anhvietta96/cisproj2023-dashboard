@@ -1,6 +1,6 @@
 """
         This function filters a Molecule-Query-Set
-        :param: self,
+        :param:
                 filter_query: one of    -->tuples [l,u] for numerical attributes, l being the lower and u being the upper bound.
                                         -->a String for attributes stored in charFields
                 attribute: Name of the ModelField holding the attribute one wants to filter by
@@ -9,11 +9,15 @@
         :return: result
         :rtype: QuerySet
         """
-from compounds.models import Molecule
+from compounds.models import MoleculeSet
 
 
-def filter_molecules(attribute, filter_query):
-    return Molecule.objects.filter(**build_molecules_filter(attribute, filter_query))
+def filter_sets(attribute, filter_query):
+    sets = MoleculeSet.objects.all()
+    result = []
+    for set in sets:
+        result.append((set.molecules.filter(**build_molecules_filter(attribute, filter_query)), set.set_name))
+    return result
 
 
 def build_molecules_filter(attribute, filter_query):

@@ -13,6 +13,32 @@ def main_compound_view(request: HttpRequest):
     sets = MoleculeSet.objects.all()
     return render(request, 'compounds/compounds.html', {'sets': sets})
 
+attr_name_mapping = {
+    "Formula": "molecular_formula",
+    "logP": "log_p",
+    "Weight": "molecular_weight",
+    "H-acceptors": "num_h_acceptors",
+    "H-donors": "num_h_donors",
+    "Rotatable bonds": "num_rotatable_bonds",
+    "Rings": "num_rings"
+}
+
+def filter_compound_view(request: HttpRequest):
+    lower = request.POST.get("lower")
+    upper = request.POST.get("upper")
+    pattern = request.POST.get("pattern")
+    attr = request.POST.get("attr")
+    if lower != None and upper != None:
+        filter_query = [int(lower), int(upper)]
+    elif pattern != None:
+        filter_query=pattern 
+
+    sets = MoleculeSet.objects.all()
+    if attr != None:
+        model_attr = attr_name_mapping[attr]
+        sets = compounds.filters.filter_sets(model_attr, filter_query)
+    return render(request, 'compounds/filtered.html', {'sets': sets})
+
 
 class CompoundViewSet(viewsets.ModelViewSet):
     queryset = Molecule.objects.all().order_by('inchi_key')
@@ -38,24 +64,6 @@ class SearchResultsView(ListView):
         query = self.request.GET.get("search_query")
         search_result = Molecule.objects.filter(inchi_key__icontains=query)
         return search_result
-
-
-#this view still causes an error: CSRF verification failed. Request aborted.
-#names passed in the variable attr aren't exacly the names of our Modelattributes, so a converting function still needs to
-#be written. Plus filtering by the query that isnt empty-> type(empty field) == None?
-class FilterResultView(ListView):
-    model = Molecule
-    template_name = 'compounds.html'
-    def get_queryset(self):
-        lower = self.request.GET.get("lower")
-        upper = self.request.GET.get("upper")
-        pattern = self.request.GET.get("pattern")
-        attr = self.request.GET.get("attr")
-
-        filter_query = [lower,upper]
-        filter_result = compounds.filters.filter_molecules("molecular_weight", filter_query)
-        return filter_result
-
 
 
 def search_results(request):
