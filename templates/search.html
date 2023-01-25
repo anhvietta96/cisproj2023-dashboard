@@ -8,16 +8,11 @@
             </tr>
             {% for row in table %}
             <tr>
-                <th><img src="{{row.8}}"></img></th>
                 {% for entry in row %}
-                    {% if forloop.counter < 2 %}
-                        <th><a href="/compounds/data/compounds/{{entry}}">{{entry}}</a></th>
+                    {% if forloop.counter == 1 %}
+                        <th><img src="{{row.0}}"></img></th>
                     {% else %}
-                        {% if forloop.counter != 9 %}
                         <th><a>{{entry}}</a></th>
-                        {% else %}
-                        
-                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </tr>
