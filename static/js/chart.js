@@ -510,9 +510,6 @@ if(chartDom) {
 
   var csv_input = document.getElementById('export-csv-val');
   csv_input.value = JSON.stringify(get_selected_inchikey(option,chart_type));
-
-  var sdf_input = document.getElementById('export-sdf-val');
-  sdf_input.value = csv_input.value;
 }
 
 $(document).ready(function(){
@@ -830,9 +827,6 @@ $(document).ready(function(){
     
     var csv_input = document.getElementById('export-csv-val');
     csv_input.value = JSON.stringify(get_selected_inchikey(option));
-
-    var sdf_input = document.getElementById('export-sdf-val');
-    sdf_input.value = csv_input.value;
   });
   $('#apply-customization').click(function(){
     var all_options = document.getElementById('customize-options');
@@ -893,6 +887,7 @@ $(document).ready(function(){
   $('#export-png').click(function(){
     var canvas_collection = document.getElementsByTagName('canvas');
     var dataURL = canvas_collection[0].toDataURL("image/png");
+    console.log(dataURL);
     var newTab = window.open('about:blank','image from canvas');
     newTab.document.write("<img src='"+dataURL+"' alt='from canvas'/>");
   });
