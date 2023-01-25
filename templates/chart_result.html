@@ -51,11 +51,6 @@
                         <input id="export-csv-val" name="export-csv-val" type="hidden"></input>
                         <button id="export-csv" type="submit">As CSV</button>
                     </form>
-                    <form method="post" action="{% url 'sdf_download' %}">
-                        {% csrf_token %}
-                        <input id="export-sdf-val" name="export-sdf-val" type="hidden"></input>
-                        <button id="export-sdf" type="submit">As SDF</button>
-                    </form>
                 </div>
             </div>
         </div>

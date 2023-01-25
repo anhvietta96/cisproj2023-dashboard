@@ -4,8 +4,6 @@ import json
 from django.http import HttpResponse
 from dashboard.settings import MEDIA_ROOT
 import os
-import pandas as pd
-from rdkit.Chem import PandasTools
 
 num_property_list = Molecule.objects.get_num_attr()
 display_num_property_list = [property.replace('_',' ').title() for property in num_property_list]
@@ -142,39 +140,6 @@ def Export_CSV(request):
         file_data = f.read()
 
     response = HttpResponse(file_data,content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
-
-    return response
-
-
-def Export_SDF(request):
-    inchikey_collection = json.loads(request.POST['export-sdf-val'])
-
-    filename = 'exported_sdf_{}.sdf'.format(request.POST['csrfmiddlewaretoken'])
-
-    property_list = Molecule.objects.get_all_export_attr()
-    data_to_pd_df = []
-    for inchikey in inchikey_collection:
-        mol = Molecule.objects.filter(inchi_key__exact=inchikey)
-        data_dict = {}
-        for property in property_list:
-            data_dict[property] = getattr(mol[0],property)
-        data_to_pd_df.append(data_dict)
-
-    df = pd.DataFrame(data_to_pd_df).transpose()
-    print(df.info())
-
-    directory = os.path.join(MEDIA_ROOT,'exported_data/sdf/')
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    filepath = os.path.join(directory,filename)
-
-    PandasTools.WriteSDF(df,filepath,molColName='name',properties=list(df.columns))
-
-    with open(filepath,'r') as f:
-        file_data = f.read()
-
-    response = HttpResponse(file_data,content_type='text/sdf')
     response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
 
     return response

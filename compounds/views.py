@@ -68,10 +68,13 @@ class SearchResultsView(ListView):
 
 def search_results(request):
     query = request.GET.get("search_query")
-    q = Molecule.objects.filter(inchi_key__icontains=query)
+    q = Molecule.objects.filter(name__icontains=query)
     search_results = []
-    properties = Molecule.__dict__["__doc__"]
-    property_list = properties[9:].replace(',', '').replace(')', '').split()
+    property_list = Molecule.objects.get_all_attr()
+
+    property_list.remove('image')
+    property_list = ['image'] + property_list
+    display_property_list = [property.replace('_',' ').title() for property in property_list]
 
     for mol in q:
         value_list = []
@@ -82,8 +85,5 @@ def search_results(request):
                 value_list.append(mol.image.url)
         search_results.append(value_list)
 
-    property_list.remove('image')
-    property_list = ['image'] + property_list
-
-    data = {'header': property_list, 'table': search_results}
+    data = {'header': display_property_list, 'table': search_results}
     return render(request, 'search.html', data)
