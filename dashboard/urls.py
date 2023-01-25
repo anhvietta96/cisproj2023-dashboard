@@ -27,5 +27,4 @@ urlpatterns = [
       path("compounds/", include('compounds.urls'), name='compounds'),
       path("chart/", include('chart.urls'), name='chart'),
       path("search/", search_results, name='search_url'),
-      path("", include('Reader.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

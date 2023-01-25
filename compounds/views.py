@@ -64,7 +64,7 @@ def search_results(request):
     search_results = []
     properties = Molecule.__dict__["__doc__"]
     property_list = properties[9:].replace(',', '').replace(')', '').split()
-    
+
     for mol in q:
         value_list = []
         for property in property_list:
@@ -73,7 +73,7 @@ def search_results(request):
             else:
                 value_list.append(mol.image.url)
         search_results.append(value_list)
-    
+
     property_list.remove('image')
     property_list = ['image'] + property_list
 

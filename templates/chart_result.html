@@ -14,7 +14,8 @@
             <div class="charts-card">Filters
                 <button id="apply-filter" class="chart-right-button">Apply</button>
                 <div id="filters">
-                    <button id="add-filter">Add Filter</button>
+                    <button id="add-filter">Add Filter</button><br>
+                    <button id="add-custom-filter">Add Custom Filter Set</button>
                 </div>
             </div>
             <div class="charts-card">Customize Chart
@@ -50,7 +51,11 @@
                         <input id="export-csv-val" name="export-csv-val" type="hidden"></input>
                         <button id="export-csv" type="submit">As CSV</button>
                     </form>
-                    <button id="export-sdf">As SDF</button>
+                    <form method="post" action="{% url 'sdf_download' %}">
+                        {% csrf_token %}
+                        <input id="export-sdf-val" name="export-sdf-val" type="hidden"></input>
+                        <button id="export-sdf" type="submit">As SDF</button>
+                    </form>
                 </div>
             </div>
         </div>
