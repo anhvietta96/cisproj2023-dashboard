@@ -55,7 +55,7 @@ def search_results(request):
         search_results.append(value_list)
 
     property_list.remove('image')
-    property_list = ['imagea'] + property_list
+    property_list = ['image'] + property_list
 
     data = {'header': property_list, 'table': search_results}
     return render(request, 'search.html', data)
