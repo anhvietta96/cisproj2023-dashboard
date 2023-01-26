@@ -213,7 +213,7 @@
                   <tr>
                       <th><h3>Image</h3></th>
                       <th><h3>InchiKey</h3></th>
-                      <th><h3>Name</h3></th>
+                      <th><h3>NameBanane</h3></th>
                       <th><h3>logP</h3></th>
                       <th><h3>Formula</h3></th>
                       <th><h3>Weight</h3></th>
@@ -226,10 +226,10 @@
                 <tbody>
                 {% for set in sets %}
                     <tr class="setheader" >
-                        <td colspan="10" id="setid">{{set.set_name}}</td>
+                        <td colspan="10" id="setid">{{set.1}}</td>
                     </tr>
 
-                    {% for mol in set.molecules.all %}
+                    {% for mol in set.0.all %}
                     <tr>
                         <td>
                         {% if mol.image %}
@@ -277,13 +277,13 @@
                                  <fieldset>
                                 <legend> <label for="row">Choose an attribute:</label></legend>
                                  <select id="attr" name="attr">
-                                     <option value="1"> Formula</option>
+                                      <option>Formula</option>
                                       <option>logP</option>
                                       <option>Weight</option>
                                       <option>H-acceptors</option>
                                       <option>H-donors</option>
                                       <option>Rotatable bonds</option>
-                                      <option>Rings</option>
+                                      <option>Ringz</option>
 
                                  </select>
                                  </fieldset>

@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView
+
+import compounds.filters
 from .serializers import MoleculeSerializer
 from .models import Molecule, MoleculeSet
 from rest_framework import viewsets
@@ -10,6 +12,32 @@ from django.core.exceptions import ObjectDoesNotExist
 def main_compound_view(request: HttpRequest):
     sets = MoleculeSet.objects.all()
     return render(request, 'compounds/compounds.html', {'sets': sets})
+
+attr_name_mapping = {
+    "Formula": "molecular_formula",
+    "logP": "log_p",
+    "Weight": "molecular_weight",
+    "H-acceptors": "num_h_acceptors",
+    "H-donors": "num_h_donors",
+    "Rotatable bonds": "num_rotatable_bonds",
+    "Rings": "num_rings"
+}
+
+def filter_compound_view(request: HttpRequest):
+    lower = request.POST.get("lower")
+    upper = request.POST.get("upper")
+    pattern = request.POST.get("pattern")
+    attr = request.POST.get("attr")
+    if lower != None and upper != None:
+        filter_query = [int(lower), int(upper)]
+    elif pattern != None:
+        filter_query=pattern 
+
+    sets = MoleculeSet.objects.all()
+    if attr != None:
+        model_attr = attr_name_mapping[attr]
+        sets = compounds.filters.filter_sets(model_attr, filter_query)
+    return render(request, 'compounds/filtered.html', {'sets': sets})
 
 
 class CompoundViewSet(viewsets.ModelViewSet):

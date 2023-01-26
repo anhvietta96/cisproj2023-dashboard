@@ -4,8 +4,6 @@ import json
 from django.http import HttpResponse
 from dashboard.settings import MEDIA_ROOT
 import os
-import pandas as pd
-from rdkit.Chem import PandasTools
 
 num_property_list = Molecule.objects.get_num_attr()
 display_num_property_list = [property.replace('_',' ').title() for property in num_property_list]

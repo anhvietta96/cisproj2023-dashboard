@@ -11,7 +11,8 @@ router.register(r"compounds", views.CompoundViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.main_compound_view, name='compounds'),
-    path('data/', include(router.urls), name='data'),
     path('search/', views.SearchResultsView.as_view(), name='search_url'),
-    path('<str:inchi_key>', views.molecule_single_view)
+    path('filter/', views.filter_compound_view, name='filter_url'),   #doesnt quite work yet
+    path('<str:inchi_key>', views.molecule_single_view),
+    path('data/', include(router.urls), name='data'),
 ]
