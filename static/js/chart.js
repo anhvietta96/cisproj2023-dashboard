@@ -750,7 +750,15 @@ $(document).ready(function(){
     {
       custom_filter_tracker[set_index].splice(arr_index,1);
     }
-    return;
+    var custom_filter_input = document.getElementById(`custom_filter_input_${set_index}`);
+    custom_filter_input.max--;
+    custom_filter_input.value = 0;
+    var curr_max = custom_filter_input.max;
+    document.getElementById(`total_filter_${set_index}`).remove();
+    var total_filter_text = document.createElement('a');
+    total_filter_text.id = `total_filter_${set_index}`;
+    total_filter_text.appendChild(document.createTextNode(` out of ${curr_max} filters\n`));
+    document.getElementById(`custom_filter_div_${set_index}`).insertBefore(total_filter_text,document.getElementById(`add_filter_rule_${set_index}`));
   });
   $('#apply-filter').click(function(){
     curr_data = $.extend(true,{},ChartOptions['data']);
