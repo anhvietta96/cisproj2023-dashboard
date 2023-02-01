@@ -1,40 +1,38 @@
+import dataclasses
+from compounds.filters import attr_name_mapping
 from django.shortcuts import render
-
 import compounds.filters
 from .models import Molecule, MoleculeSet
 from django.http import HttpRequest
 from django.core.exceptions import ObjectDoesNotExist
 
 
+@dataclasses.dataclass
+class Set:
+    set_name: str
+    mol_list: list
+
+
 def main_compound_view(request: HttpRequest):
-    sets = MoleculeSet.objects.all()
-    return render(request, 'compounds/compounds.html', {'sets': sets})
+    set_list = [Set(mol_set.set_name, mol_set.molecules.all())
+                for mol_set in MoleculeSet.objects.all()]
+    if request.method == "POST":
+        lower = request.POST.get("lower")
+        upper = request.POST.get("upper")
+        pattern = request.POST.get("pattern")
+        attr = request.POST.get("attr")
+        if attr:
+            if lower and upper:
+                filter_query = [float(lower), float(upper)]
+            elif pattern:
+                filter_query=pattern
+            else:
+                return render(request, 'compounds/compounds.html', {'set_list': set_list})
 
-attr_name_mapping = {
-    "Formula": "molecular_formula",
-    "logP": "log_p",
-    "Weight": "molecular_weight",
-    "H-acceptors": "num_h_acceptors",
-    "H-donors": "num_h_donors",
-    "Rotatable bonds": "num_rotatable_bonds",
-    "Rings": "num_rings"
-}
+            model_attr = attr_name_mapping[attr]
+            compounds.filters.filter_sets(model_attr, filter_query, set_list)
+    return render(request, 'compounds/compounds.html', {'set_list': set_list})
 
-def filter_compound_view(request: HttpRequest):
-    lower = request.POST.get("lower")
-    upper = request.POST.get("upper")
-    pattern = request.POST.get("pattern")
-    attr = request.POST.get("attr")
-    if lower != None and upper != None:
-        filter_query = [int(lower), int(upper)]
-    elif pattern != None:
-        filter_query=pattern 
-
-    sets = MoleculeSet.objects.all()
-    if attr != None:
-        model_attr = attr_name_mapping[attr]
-        sets = compounds.filters.filter_sets(model_attr, filter_query)
-    return render(request, 'compounds/filtered.html', {'sets': sets})
 
 def molecule_single_view(request: HttpRequest, inchi_key: str):
     try:
@@ -44,6 +42,7 @@ def molecule_single_view(request: HttpRequest, inchi_key: str):
 
     return render(request, 'compounds/compounds.html',
                   {'molecules': [molecule]})
+
 
 def search_results(request):
     query = request.GET.get("search_query")
