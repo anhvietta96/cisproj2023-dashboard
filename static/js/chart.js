@@ -125,7 +125,7 @@ create_new_input_field creates different input DOMs based on whether it's in sim
   type = 0 refers to string-based field
   type = 1 refers to numerical field
   id_arr contains the id(s) of the parent div element. id of the child input fields must match.
-get_selected_inchikey extracts inchikey from current data in option to save in hidden input field for exporting CSV/SDF
+get_selected_inchikey extracts inchikey from current data in option to save in hidden input field for exporting TSV/SDF
 ===================================================================
 */
 
@@ -567,8 +567,8 @@ if(chartDom) {
   }
   option && Chart.setOption(option);
 
-  var csv_input = document.getElementById('export-csv-val');
-  csv_input.value = JSON.stringify(get_selected_inchikey(option,chart_type));
+  var tsv_input = document.getElementById('export-tsv-val');
+  tsv_input.value = JSON.stringify(get_selected_inchikey(option,chart_type));
 }
 
 $(document).ready(function(){
@@ -942,8 +942,8 @@ $(document).ready(function(){
     option && Chart.setOption(option);
     
     //Change hidden input
-    var csv_input = document.getElementById('export-csv-val');
-    csv_input.value = JSON.stringify(get_selected_inchikey(option));
+    var tsv_input = document.getElementById('export-tsv-val');
+    tsv_input.value = JSON.stringify(get_selected_inchikey(option));
   });
   /*
   ===================================================================

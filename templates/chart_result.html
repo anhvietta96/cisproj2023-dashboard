@@ -46,10 +46,10 @@
             <div class="charts-card" id='export-div'>Export
                 <div>
                     <button id="export-png">As PNG</button>
-                    <form method="post" action="{% url 'csv_download' %}">
+                    <form method="post" action="{% url 'tsv_download' %}">
                         {% csrf_token %}
-                        <input id="export-csv-val" name="export-csv-val" type="hidden"></input>
-                        <button id="export-csv" type="submit">As CSV</button>
+                        <input id="export-tsv-val" name="export-tsv-val" type="hidden"></input>
+                        <button id="export-tsv" type="submit">As TSV</button>
                     </form>
                 </div>
             </div>

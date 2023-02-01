@@ -112,10 +112,10 @@ def ChartResult(request):
     return render(request,'chart_result.html',result)
 
 
-def Export_CSV(request):
+def Export_TSV(request):
     inchikey_collection = json.loads(request.POST['export-csv-val'])
 
-    filename = 'exported_csv_{}.csv'.format(request.POST['csrfmiddlewaretoken'])
+    filename = 'exported_tsv_{}.tsv'.format(request.POST['csrfmiddlewaretoken'])
 
     property_list = Molecule.objects.get_all_export_attr()
     data_to_write = ['\t'.join(property_list)+'\n']
@@ -128,7 +128,7 @@ def Export_CSV(request):
         data_string = data_string[:-1] + '\n'
         data_to_write.append(data_string)
 
-    directory = os.path.join(MEDIA_ROOT,'exported_data/csv/')
+    directory = os.path.join(MEDIA_ROOT,'exported_data/tsv/')
     if not os.path.exists(directory):
         os.makedirs(directory)
     filepath = os.path.join(directory,filename)
@@ -139,7 +139,7 @@ def Export_CSV(request):
     with open(filepath,'r') as f:
         file_data = f.read()
 
-    response = HttpResponse(file_data,content_type='text/csv')
+    response = HttpResponse(file_data,content_type='text/tsv')
     response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
 
     return response
