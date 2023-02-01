@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
-
+from dashboard.settings import MEDIA_ROOT
+import os
 
 class SDFile(models.Model):
     description = models.CharField(max_length=100, blank=True)
@@ -10,4 +11,4 @@ class SDFile(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def path(self):
-        return '/media/uploaded_data'
+        return os.path.join(MEDIA_ROOT,'uploaded_data')

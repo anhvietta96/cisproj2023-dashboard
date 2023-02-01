@@ -1,10 +1,7 @@
 from django.shortcuts import render
-from django.views.generic import ListView
 
 import compounds.filters
-from .serializers import MoleculeSerializer
 from .models import Molecule, MoleculeSet
-from rest_framework import viewsets
 from django.http import HttpRequest
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -39,13 +36,6 @@ def filter_compound_view(request: HttpRequest):
         sets = compounds.filters.filter_sets(model_attr, filter_query)
     return render(request, 'compounds/filtered.html', {'sets': sets})
 
-
-class CompoundViewSet(viewsets.ModelViewSet):
-    queryset = Molecule.objects.all().order_by('inchi_key')
-    serializer_class = MoleculeSerializer
-    http_method_names = ['get', 'head']
-
-
 def molecule_single_view(request: HttpRequest, inchi_key: str):
     try:
         molecule = Molecule.objects.get(pk=inchi_key)
@@ -54,17 +44,6 @@ def molecule_single_view(request: HttpRequest, inchi_key: str):
 
     return render(request, 'compounds/compounds.html',
                   {'molecules': [molecule]})
-
-
-class SearchResultsView(ListView):
-    model = Molecule
-    template_name = 'search.html'
-
-    def get_queryset(self):
-        query = self.request.GET.get("search_query")
-        search_result = Molecule.objects.filter(inchi_key__icontains=query)
-        return search_result
-
 
 def search_results(request):
     query = request.GET.get("search_query")
