@@ -1,3 +1,11 @@
+/*
+===================================================================
+Input Sanitization Section:
+checkValidInt & checkValidFloat are used for customization options.
+sanitizeFloatInput is used for filter.
+===================================================================
+*/
+
 function checkValidInt(input)
 {
  return typeof(input)=="string" && !isNaN(input) && !isNaN(parseInt(input));
@@ -28,6 +36,14 @@ function sanitizeFloatInput(input,positive_bool)
   }
   return parseFloat(input);
 }
+
+/*
+===================================================================
+Filter Computation Section:
+numerical_filter & lexicographic_filter filter out data value at 'pos' position & are used in single filter.
+filter_multiple_attr tallies up the number of satisfied filters and compare to threshold & used in custom set.
+===================================================================
+*/
 
 function numerical_filter(data,pos,lower_bound,upper_bound)
 {
@@ -64,6 +80,54 @@ function lexicographic_filter(data,pos,substring)
   }
   return filtered_data;
 }
+
+function filter_multiple_attr(collected_filter,curr_data,threshold)
+{
+  var filtered = {}
+  for(const group of Object.keys(curr_data))
+  {
+    filtered[group] = [];
+    for(const i of Object.keys(curr_data[group]))
+    {
+      var data_point = curr_data[group][i];
+      var count = 0;
+      for(let j = 0; j < collected_filter.length; j++)
+      {
+        var attr = parseInt(collected_filter[j][0]);
+        if(collected_filter[j].length == 2)
+        {
+          if(data_point[attr].includes(collected_filter[j][1]))
+          {
+            count++;
+          }
+        }
+        else
+        {
+          if(collected_filter[j][1] < data_point[attr] && data_point[attr] < collected_filter[j][2])
+          {
+            count++;
+          }
+        }
+      }
+      if(count >= threshold)
+      {
+        filtered[group].push(data_point);
+      }
+    }
+  }
+  return filtered;
+}
+
+/*
+===================================================================
+DOM Manipulating Section:
+create_new_input_field creates different input DOMs based on whether it's in simple filter or custom set, and based on the value of select (numerical or string-based)
+  type = 0 refers to string-based field
+  type = 1 refers to numerical field
+  id_arr contains the id(s) of the parent div element. id of the child input fields must match.
+get_selected_inchikey extracts inchikey from current data in option to save in hidden input field for exporting CSV/SDF
+===================================================================
+*/
 
 function create_new_input_field(type,id_arr)
 {
@@ -106,43 +170,6 @@ function create_new_input_field(type,id_arr)
   return sub_paragraph;
 }
 
-function filter_multiple_attr(collected_filter,curr_data,threshold)
-{
-  var filtered = {}
-  for(const group of Object.keys(curr_data))
-  {
-    filtered[group] = [];
-    for(const i of Object.keys(curr_data[group]))
-    {
-      var data_point = curr_data[group][i];
-      var count = 0;
-      for(let j = 0; j < collected_filter.length; j++)
-      {
-        var attr = parseInt(collected_filter[j][0]);
-        if(collected_filter[j].length == 2)
-        {
-          if(data_point[attr].includes(collected_filter[j][1]))
-          {
-            count++;
-          }
-        }
-        else
-        {
-          if(collected_filter[j][1] < data_point[attr] && data_point[attr] < collected_filter[j][2])
-          {
-            count++;
-          }
-        }
-      }
-      if(count >= threshold)
-      {
-        filtered[group].push(data_point);
-      }
-    }
-  }
-  return filtered;
-}
-
 function get_selected_inchikey(option,chart_type)
 {
   if([1,2].includes(chart_type))
@@ -163,6 +190,26 @@ function get_selected_inchikey(option,chart_type)
   }
   return inchikey_array;
 }
+
+/*
+===================================================================
+Data Manipulating Section:
+  General data form: 
+  [
+    [\\ Set 1
+      [attr1,attr2,...],  \\molecule1
+      [attr1,attr2,...],  \\molecule2
+    ],
+    [\\ Set 2
+      [attr1,attr2,...],
+      [attr1,attr2,...]
+    ]
+  ]
+extract_column extracts the column dictated by position. Output is saved as a concatenated array in concat_col and multiple arrays (correspond to multiple sets) in separated_col.
+get_new_max_vals calculate the appropriate min, max value on x and y-axis of scatter plot (to account for tooltip)
+===================================================================
+*/
+
 
 function get_new_max_vals(data)
 {
@@ -205,6 +252,14 @@ function extract_column(data,position)
   }
   return {separated_col:separated_col,concat_col:concat_col};
 }
+
+/*
+===================================================================
+Chart Creation Section:
+get_scatter_option & get_histogram_option create option-Object for scatter plot & histogram respectively.
+process_histogram_data tallies up data points in general data form (see above) to transform to histogram data.
+===================================================================
+*/
 
 function get_scatter_option(data,image,legend,tooltip_col)
 {
@@ -406,8 +461,6 @@ function process_histogram_data(data, num_of_bar)
   return {processed_data:processed_data,x_min:x_min,x_max:x_max,y_max:y_max};
 }
 
-
-
 function get_histogram_option(data,legend,tooltip_col,num_of_bar)
 {
   var histogram_data = process_histogram_data(data,num_of_bar);
@@ -473,6 +526,12 @@ function get_histogram_option(data,legend,tooltip_col,num_of_bar)
   return option;
 }
 
+/*
+===================================================================
+Driver Code to initialize page:
+===================================================================
+*/
+
 var ChartOptions;
 var Chart;
 var option;
@@ -517,6 +576,12 @@ $(document).ready(function(){
   var available_filter = [];
   var available_custom_filter = [];
   var custom_filter_tracker = {};
+  /*
+  ===================================================================
+  Add filter
+  Template: <delete_buttonDOM><selectDOM><text depending on selectDOM>
+  ===================================================================
+  */
   $('#add-filter').click(function(){
     var index;
     for(let i = 0; i <= num_filter;i++)
@@ -558,6 +623,12 @@ $(document).ready(function(){
     available_filter.push(index);
     return;
   });
+  /*
+  ===================================================================
+  Add custom set:
+  Template: <delete_custom_filter_buttonDOM><text><input threshold><total number of filter in set>
+  ===================================================================
+  */
   $('#add-custom-filter').click(function(){
     var index;
     for(let i = 0; i <= available_custom_filter.length ;i++)
@@ -606,6 +677,12 @@ $(document).ready(function(){
     const elem_button = document.getElementById('add-filter');
     element.insertBefore(new_div,elem_button);
   });
+  /*
+  ===================================================================
+  Add filter in custom set:
+  Template: <delete_buttonDOM><selectDOM><text depending on selectDOM>
+  ===================================================================
+  */
   $('#filters').on('click','button.custom_set_btn', function(){
     var id = this.id;
     var index = id.split("_")[3];
@@ -669,6 +746,11 @@ $(document).ready(function(){
     var main_div = document.getElementById(`custom_filter_div_${index}`);
     main_div.appendChild(sub_div);
   });
+  /*
+  ===================================================================
+  Handle change on all select DOMs in filters
+  ===================================================================
+  */
   $('#filters').on('change','select',function(events){
     var id = this.id;
     var split_id = id.split("_");
@@ -706,6 +788,11 @@ $(document).ready(function(){
       }
     }
   });
+  /*
+  ===================================================================
+  Remove filter:
+  ===================================================================
+  */
   $('#filters').on('click','button.filter-btn',function(events){
     var id = this.id;
     var split_id = id.split("_");
@@ -723,6 +810,11 @@ $(document).ready(function(){
     available_filter=new_arr;
     return;
   });
+  /*
+  ===================================================================
+  Remove custom set:
+  ===================================================================
+  */
   $('#filters').on('click','button.sub-filter-btn',function(){
     var id = this.id;
     var split_id = id.split("_");
@@ -737,6 +829,11 @@ $(document).ready(function(){
     }
     return;
   });
+  /*
+  ===================================================================
+  Remove filter in custom set:
+  ===================================================================
+  */
   $('#filters').on('click','button.sub-delete-btn',function(){
     var id = this.id;
     var split_id = id.split("_");
@@ -760,8 +857,16 @@ $(document).ready(function(){
     total_filter_text.appendChild(document.createTextNode(` out of ${curr_max} filters\n`));
     document.getElementById(`custom_filter_div_${set_index}`).insertBefore(total_filter_text,document.getElementById(`add_filter_rule_${set_index}`));
   });
+  /*
+  ===================================================================
+  Apply filter:
+  ===================================================================
+  */
   $('#apply-filter').click(function(){
+    //Deep copy of original data
     curr_data = $.extend(true,{},ChartOptions['data']);
+    
+    //Filter data through all simple filters
     if(available_filter.length!=0)
     {
       var filter = null;
@@ -782,6 +887,8 @@ $(document).ready(function(){
         }
       }
     }
+
+    //Filter data through all custom filter sets
     if(available_custom_filter.length != 0)
     {
       for(const set_index of Object.keys(custom_filter_tracker))
@@ -807,6 +914,8 @@ $(document).ready(function(){
         curr_data = filter_multiple_attr(collected_filter,curr_data,threshold);
       }
     }
+
+    //Process data & set option based on chart type
     if(chart_type == 3)
     {
       var histogram_data = process_histogram_data(curr_data,curr_num_of_bar);
@@ -830,15 +939,22 @@ $(document).ready(function(){
       option['yAxis']['min'] = xy_min_max[2];
       option['yAxis']['max'] = xy_min_max[3];
     }
-    
     option && Chart.setOption(option);
     
+    //Change hidden input
     var csv_input = document.getElementById('export-csv-val');
     csv_input.value = JSON.stringify(get_selected_inchikey(option));
   });
+  /*
+  ===================================================================
+  Apply customization:
+  ===================================================================
+  */
   $('#apply-customization').click(function(){
     var all_options = document.getElementById('customize-options');
     var all_custom_select = all_options.querySelectorAll('select');
+
+    //Check all select field in customization: transformation from scatter to bubble
     for(var i = 0; i < all_custom_select.length; i++)
     {
       var select_field = all_custom_select[i];
@@ -857,10 +973,14 @@ $(document).ready(function(){
         }
       }
     }
+
+    //Check all input fields in customization
     var all_custom_input = all_options.querySelectorAll('input');
     for(var i = 0; i < all_custom_input.length; i++)
     {
       var input_field = all_custom_input[i];
+      
+      //Rescaling options
       if(input_field.id == 'new-min-x' && checkValidFloat(input_field.value))
       {
         option['xAxis']['min'] = parseFloat(input_field.value);
@@ -877,6 +997,8 @@ $(document).ready(function(){
       {
         option['yAxis']['max'] = parseFloat(input_field.value);
       }
+
+      //No. bins in histogram
       if(input_field.id == 'bin-num'  && checkValidInt(input_field.value))
       {
         curr_num_of_bar = parseInt(input_field.value);
@@ -892,6 +1014,11 @@ $(document).ready(function(){
     }
     option && Chart.setOption(option);
   });
+  /*
+  ===================================================================
+  Export PNG:
+  ===================================================================
+  */
   $('#export-png').click(function(){
     var canvas_collection = document.getElementsByTagName('canvas');
     var dataURL = canvas_collection[0].toDataURL("image/png");
@@ -901,6 +1028,11 @@ $(document).ready(function(){
   });
 });
 
+/*
+===================================================================
+Resize chart on window resize
+===================================================================
+*/
 window.onresize = function() {
   Chart.resize();
 };
