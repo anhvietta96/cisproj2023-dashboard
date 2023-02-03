@@ -113,7 +113,7 @@ def ChartResult(request):
 
 
 def Export_TSV(request):
-    inchikey_collection = json.loads(request.POST['export-csv-val'])
+    inchikey_collection = json.loads(request.POST['export-tsv-val'])
 
     filename = 'exported_tsv_{}.tsv'.format(request.POST['csrfmiddlewaretoken'])
 

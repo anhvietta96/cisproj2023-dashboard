@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ChartOptions, ChartResult, Export_CSV
+from .views import ChartOptions, ChartResult, Export_TSV
 
 urlpatterns = [
     path('', ChartOptions, name='chart_options'),
